@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/v1/appointment
+Content-Type: application/json
+
+{
+    "date": "2015-5-5",
+    "applicants": [
+        {
+            
+        }
+    ]
+}
