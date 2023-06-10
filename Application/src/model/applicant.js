@@ -22,16 +22,11 @@ const applicantSchema = new mongoose.Schema(
       maxlength: [50, "Last name cannot be more than 50 characters"],
       trim: true,
     },
-    visaType: {
-      type: String,
-      required: [true, "Visa type is required"],
-      trim: true,
-    },
     passportNumber: {
       type: String,
       required: [true, "Passport number is required"],
       trim: true,
-      unique: true,
+      unique: [true, "Passport number is not unique"],
       validate: {
         validator: function (v) {
           return /\d{9}/.test(v);
@@ -53,16 +48,10 @@ const applicantSchema = new mongoose.Schema(
       type: Date,
       required: [true, "Issue date is required"],
     },
-    issuePlace: {
-      type: String,
-      required: [true, "Issue place is required"],
-      trim: true,
-    },
     email: {
       type: String,
       required: [true, "Email is required"],
       trim: true,
-      unique: true,
       lowercase: true,
       validate: {
         validator: function (v) {
@@ -76,6 +65,14 @@ const applicantSchema = new mongoose.Schema(
     mobileNumber: {
       type: String,
       required: true,
+    },
+    note: {
+      type: String,
+      trim: true,
+    },
+    booked: {
+      type: Boolean,
+      default: false,
     },
   },
   {
