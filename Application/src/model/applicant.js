@@ -65,6 +65,8 @@ const applicantSchema = new mongoose.Schema(
     mobileNumber: {
       type: String,
       required: true,
+      trim: true,
+      match: /^\+20\s\d{11}$/,
     },
     note: {
       type: String,
