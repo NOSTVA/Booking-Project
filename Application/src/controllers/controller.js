@@ -9,8 +9,9 @@ async function getAppointments(req, res, next) {
       appointments.map(async (appointment) => {
         const applicants = await Applicant.find({
           appointment: appointment._id,
-        }).select(" -__v -updatedAt");
+        });
         return {
+          _id: appointment._id,
           date: appointment.date,
           applicants: applicants,
         };
@@ -86,6 +87,7 @@ async function getApplicant(req, res, next) {
 async function addApplicant(req, res, next) {
   try {
     const applicant = req.body;
+    console.log(applicant);
 
     const count = await Applicant.find({ appointment: applicant.appointment });
 
@@ -93,10 +95,7 @@ async function addApplicant(req, res, next) {
       return res.json({ message: "cannot add more than 5 applicant" });
     }
 
-    const createdApplicant = await Applicant.create({
-      appointment: applicant.appointment,
-      ...applicant,
-    });
+    const createdApplicant = await Applicant.create({ ...applicant });
 
     res.status(201).json({ createdApplicant });
   } catch (err) {
