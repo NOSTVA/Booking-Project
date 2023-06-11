@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PersonsField from "./PersonsField";
 import CreatePerson from "./CreatePerson";
-
-import { Container } from "@chakra-ui/react";
+import { Container, useColorMode, Button } from "@chakra-ui/react";
 
 function App() {
   const [applicants, setApplicants] = useState([]);
@@ -86,9 +85,12 @@ function App() {
     }
     setLoading(false);
   }
-
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Container maxW="8xl" pt={10}>
+      <Button onClick={toggleColorMode} mb={5}>
+        {colorMode === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+      </Button>
       <PersonsField
         applicants={applicants}
         fetchApplicants={fetchApplicants}
