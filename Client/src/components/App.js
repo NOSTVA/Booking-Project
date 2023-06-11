@@ -15,9 +15,7 @@ function App() {
   async function fetchApplicants() {
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/v1/appointments/applicants`
-      );
+      const res = await fetch(`/api/v1/appointments/applicants`);
       const data = await res.json();
       setApplicants(data);
     } catch (err) {
@@ -32,9 +30,7 @@ function App() {
       if (!id.trim()) {
         fetchApplicants();
       } else {
-        const res = await fetch(
-          `http://localhost:3000/api/v1/appointments/applicants/${id}`
-        );
+        const res = await fetch(`/api/v1/appointments/applicants/${id}`);
         const data = await res.json();
         data ? setApplicants([data]) : setApplicants([]);
       }
@@ -47,16 +43,13 @@ function App() {
   async function updateApplicant(id, data) {
     setLoading(true);
     try {
-      await fetch(
-        `http://localhost:3000/api/v1/appointments/applicants/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      await fetch(`/api/v1/appointments/applicants/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
       await fetchApplicants();
     } catch (err) {
       console.error(err);
@@ -67,12 +60,9 @@ function App() {
   async function deleteApplicant(id) {
     setLoading(true);
     try {
-      await fetch(
-        `http://localhost:3000/api/v1/appointments/applicants/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      await fetch(`/api/v1/appointments/applicants/${id}`, {
+        method: "DELETE",
+      });
       await fetchApplicants();
     } catch (err) {
       console.error(err);
@@ -83,7 +73,7 @@ function App() {
   async function createApplicant(formData) {
     setLoading(true);
     try {
-      await fetch(`http://localhost:3000/api/v1/appointments/applicants`, {
+      await fetch(`/api/v1/appointments/applicants`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

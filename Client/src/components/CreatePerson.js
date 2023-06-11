@@ -40,7 +40,7 @@ function CreatePerson({ createApplicant }) {
 
   async function fetchAppointments() {
     try {
-      const res = await fetch(`http://localhost:3000/api/v1/appointments`);
+      const res = await fetch(`/api/v1/appointments`);
       const data = await res.json();
       setAppointments(data);
     } catch (err) {

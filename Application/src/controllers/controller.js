@@ -28,8 +28,6 @@ async function createAppointment(req, res, next) {
   try {
     const { date, applicants } = req.body;
 
-    console.log(date, applicants);
-
     if (
       !date ||
       !Array.isArray(applicants) ||
@@ -87,7 +85,6 @@ async function getApplicant(req, res, next) {
 async function addApplicant(req, res, next) {
   try {
     const applicant = req.body;
-    console.log(applicant);
 
     const count = await Applicant.find({ appointment: applicant.appointment });
 
