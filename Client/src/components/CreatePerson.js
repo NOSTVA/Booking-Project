@@ -84,7 +84,7 @@ function CreatePerson({ createApplicant }) {
         <ModalOverlay />
         <ModalContent>
           <form onSubmit={handleSubmit}>
-            <ModalHeader>Create your account</ModalHeader>
+            <ModalHeader>Add applicant to appointment</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
               <Stack spacing={2}>

@@ -92,7 +92,7 @@ function PersonsField({
             fetchApplicant(idValue);
           }}>
           <FormControl>
-            <FormLabel>Applicant ID</FormLabel>
+            <FormLabel>Find Applicant By ID</FormLabel>
             <Input
               type="text"
               value={idValue}
@@ -337,7 +337,6 @@ function PersonsField({
                               updateApplicant(_id, {
                                 booked: e.target.checked,
                               });
-                              console.log(e.target.checked);
                             }}
                           />
                         </Td>

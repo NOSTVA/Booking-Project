@@ -4,7 +4,6 @@ const Appointment = require("../model/appointment");
 async function getAppointments(req, res, next) {
   try {
     const appointments = await Appointment.find();
-
     const data = await Promise.all(
       appointments.map(async (appointment) => {
         const applicants = await Applicant.find({
@@ -13,11 +12,10 @@ async function getAppointments(req, res, next) {
         return {
           _id: appointment._id,
           date: appointment.date,
-          applicants: applicants,
+          applicants,
         };
       })
     );
-
     res.json(data);
   } catch (err) {
     next(err);
@@ -25,27 +23,46 @@ async function getAppointments(req, res, next) {
 }
 
 async function createAppointment(req, res, next) {
-  try {
-    const { date, applicants } = req.body;
+  const { date, applicants } = req.body;
 
-    if (
-      !date ||
-      !Array.isArray(applicants) ||
-      applicants.length === 0 ||
-      applicants.length > 5
-    ) {
-      return res.status(400).json({ message: "Invalid data" });
+  if (
+    !date ||
+    !Array.isArray(applicants) ||
+    applicants.length === 0 ||
+    applicants.length > 5
+  ) {
+    return res.status(400).json({ message: "Invalid data" });
+  }
+
+  const appointment = new Appointment({ date });
+  const validationError = appointment.validateSync();
+  if (validationError) {
+    return res
+      .status(400)
+      .json({
+        message: "Invalid appointment data",
+        error: validationError.errors,
+      });
+  }
+
+  const applicantDocs = applicants.map((applicant) => {
+    const applicantDoc = new Applicant({
+      appointment: appointment._id,
+      ...applicant,
+    });
+    const validationError = applicantDoc.validateSync();
+    if (validationError) {
+      throw new Error(validationError);
     }
+    return applicantDoc;
+  });
 
-    const createdAppointment = await Appointment.create({ date });
-    const createdApplicants = await Applicant.insertMany(
-      applicants.map((applicant) => ({
-        appointment: createdAppointment._id,
-        ...applicant,
-      }))
-    );
-
-    res.status(201).json({ createdAppointment, createdApplicants });
+  try {
+    await Promise.all([
+      appointment.save(),
+      Applicant.insertMany(applicantDocs),
+    ]);
+    res.status(201).json({ appointment, applicants: applicantDocs });
   } catch (err) {
     next(err);
   }
@@ -83,17 +100,27 @@ async function getApplicant(req, res, next) {
 }
 
 async function addApplicant(req, res, next) {
+  const applicant = req.body;
+
+  const applicantDoc = new Applicant({ ...applicant });
+  const validationError = applicantDoc.validateSync();
+  if (validationError) {
+    return res
+      .status(400)
+      .json({
+        message: "Invalid applicant data",
+        error: validationError.errors,
+      });
+  }
+
   try {
-    const applicant = req.body;
-
-    const count = await Applicant.find({ appointment: applicant.appointment });
-
-    if (!count || !(count.length < 5)) {
-      return res.json({ message: "cannot add more than 5 applicant" });
+    const count = await Applicant.countDocuments({
+      appointment: applicant.appointment,
+    });
+    if (count >= 5) {
+      return res.json({ message: "Cannot add more than 5 applicants" });
     }
-
-    const createdApplicant = await Applicant.create({ ...applicant });
-
+    const createdApplicant = await applicantDoc.save();
     res.status(201).json({ createdApplicant });
   } catch (err) {
     next(err);
@@ -103,11 +130,11 @@ async function addApplicant(req, res, next) {
 async function deleteApplicant(req, res, next) {
   try {
     const { applicantId } = req.params;
-
     const applicant = await Applicant.findByIdAndDelete(applicantId);
 
-    if (!applicant)
-      return res.status(404).json({ message: "applicant not found" });
+    if (!applicant) {
+      return res.status(404).json({ message: "Applicant not found" });
+    }
 
     res.status(201).json(applicant);
   } catch (err) {
@@ -133,12 +160,12 @@ async function updateApplicant(req, res, next) {
     if (typeof firstName !== "string" || !firstName.trim()) {
       return res
         .status(400)
-        .json({ message: "firstName must be a non-empty string" });
+        .json({ message: "First name must be a non-empty string" });
     }
     if (firstName.length < 2 || firstName.length > 50) {
       return res
         .status(400)
-        .json({ message: "firstName must be between 2 and 50 characters" });
+        .json({ message: "First name must be between 2 and 50 characters" });
     }
     updateQuery.firstName = firstName;
   }
@@ -147,12 +174,12 @@ async function updateApplicant(req, res, next) {
     if (typeof lastName !== "string" || !lastName.trim()) {
       return res
         .status(400)
-        .json({ message: "lastName must be a non-empty string" });
+        .json({ message: "Last name must be a non-empty string" });
     }
     if (lastName.length < 2 || lastName.length > 50) {
       return res
         .status(400)
-        .json({ message: "lastName must be between 2 and 50 characters" });
+        .json({ message: "Last name must be between 2 and 50 characters" });
     }
     updateQuery.lastName = lastName;
   }
@@ -171,45 +198,34 @@ async function updateApplicant(req, res, next) {
     const mobileNumberRegex = /^\+20\s\d{11}$/;
     if (!mobileNumberRegex.test(mobileNumber)) {
       return res.status(400).json({
-        message: "Mobile number must be in the format of '+20 01111970606'",
+        message: "Mobile number must be in the format '+20 <11-digit number>'",
       });
     }
     updateQuery.mobileNumber = mobileNumber;
   }
 
-  if (booked !== undefined) {
-    if (typeof booked !== "boolean") {
-      return res
-        .status(400)
-        .json({ message: "Booked must be a boolean value" });
+  if (email !== undefined) {
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email address" });
     }
-    updateQuery.booked = booked;
-  }
-
-  if (issueDate !== undefined) {
-    const issueDateObj = new Date(issueDate);
-    if (isNaN(issueDateObj.getTime())) {
-      return res
-        .status(400)
-        .json({ message: "Issue date must be a valid date" });
-    }
-    updateQuery.issueDate = issueDateObj;
+    updateQuery.email = email;
   }
 
   if (dateOfBirth !== undefined) {
-    const birthDate = new Date(dateOfBirth);
-    if (isNaN(birthDate.getTime())) {
-      return res
-        .status(400)
-        .json({ message: "Date of birth must be a valid date" });
+    const dob = new Date(dateOfBirth);
+    if (isNaN(dob.getTime())) {
+      return res.status(400).json({ message: "Invalid date of birth" });
     }
-    const age = Math.floor(
-      (new Date() - birthDate) / (365.25 * 24 * 60 * 60 * 1000)
-    );
-    if (age < 1 || age > 120) {
-      return res.status(400).json({ message: "Age must be between 1 and 120" });
+    updateQuery.dateOfBirth = dob;
+  }
+
+  if (issueDate !== undefined) {
+    const id = new Date(issueDate);
+    if (isNaN(id.getTime())) {
+      return res.status(400).json({ message: "Invalid issue date" });
     }
-    updateQuery.dateOfBirth = birthDate;
+    updateQuery.issueDate = id;
   }
 
   if (note !== undefined) {
@@ -219,22 +235,26 @@ async function updateApplicant(req, res, next) {
     updateQuery.note = note;
   }
 
-  if (email !== undefined) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res
-        .status(400)
-        .json({ message: "Email must be a valid email address" });
+  if (booked !== undefined) {
+    if (typeof booked !== "boolean") {
+      return res.status(400).json({ message: "Booked must be a boolean" });
     }
-    updateQuery.email = email;
+    updateQuery.booked = booked;
   }
 
   try {
     const { applicantId } = req.params;
-    const applicant = await Applicant.findByIdAndUpdate(
+    const updatedApplicant = await Applicant.findByIdAndUpdate(
       applicantId,
-      updateQuery
+      updateQuery,
+      { new: true }
     );
-    res.json(applicant);
+
+    if (!updatedApplicant) {
+      return res.status(404).json({ message: "Applicant not found" });
+    }
+
+    res.json(updatedApplicant);
   } catch (err) {
     next(err);
   }
@@ -244,8 +264,8 @@ module.exports = {
   getAppointments,
   createAppointment,
   getApplicants,
+  getApplicant,
   addApplicant,
   deleteApplicant,
-  getApplicant,
   updateApplicant,
 };
