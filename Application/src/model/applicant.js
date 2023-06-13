@@ -25,6 +25,7 @@ const applicantSchema = new mongoose.Schema(
     passportNumber: {
       type: String,
       required: [true, "Passport number is required"],
+      index: true,
       trim: true,
       unique: [true, "Passport number is not unique"],
       validate: {
@@ -43,38 +44,6 @@ const applicantSchema = new mongoose.Schema(
         },
         message: (props) => `${props.value} is not a valid date of birth!`,
       },
-    },
-    issueDate: {
-      type: Date,
-      required: [true, "Issue date is required"],
-    },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      trim: true,
-      lowercase: true,
-      validate: {
-        validator: function (v) {
-          return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-            v
-          );
-        },
-        message: (props) => `${props.value} is not a valid email address!`,
-      },
-    },
-    mobileNumber: {
-      type: String,
-      required: true,
-      trim: true,
-      match: /^\+20\s\d{11}$/,
-    },
-    note: {
-      type: String,
-      trim: true,
-    },
-    booked: {
-      type: Boolean,
-      default: false,
     },
   },
   {

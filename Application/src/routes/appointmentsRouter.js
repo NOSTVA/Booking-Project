@@ -3,21 +3,21 @@ const router = express.Router();
 
 const {
   getAppointments,
+  getAppointmentById,
   createAppointment,
-  getApplicants,
+  deleteAppointmentById,
   addApplicant,
-  deleteApplicant,
-  getApplicant,
-  updateApplicant,
+  deleteApplicantById,
+  updateApplicantById,
 } = require("../controllers/controller");
 
 router.get("/appointments", getAppointments);
+router.get("/appointments/:id", getAppointmentById);
 router.post("/appointments", createAppointment);
+router.delete("/appointments/:id", deleteAppointmentById);
 
-router.get("/appointments/applicants", getApplicants);
-router.get("/appointments/applicants/:applicantId", getApplicant);
 router.post("/appointments/applicants", addApplicant);
-router.delete("/appointments/applicants/:applicantId", deleteApplicant);
-router.put("/appointments/applicants/:applicantId", updateApplicant);
+router.delete("/appointments/applicants/:id", deleteApplicantById);
+router.put("/appointments/applicants/:id", updateApplicantById);
 
 module.exports = router;
