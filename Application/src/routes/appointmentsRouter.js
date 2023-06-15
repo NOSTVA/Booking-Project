@@ -6,18 +6,13 @@ const {
   getAppointmentById,
   createAppointment,
   deleteAppointmentById,
-  addApplicant,
-  deleteApplicantById,
-  updateApplicantById,
+  updateAppointmentById,
 } = require("../controllers/controller");
 
-router.get("/appointments", getAppointments);
-router.get("/appointments/:id", getAppointmentById);
-router.post("/appointments", createAppointment);
-router.delete("/appointments/:id", deleteAppointmentById);
-
-router.post("/appointments/applicants", addApplicant);
-router.delete("/appointments/applicants/:id", deleteApplicantById);
-router.put("/appointments/applicants/:id", updateApplicantById);
+router.get("/", getAppointments);
+router.get("/:id", getAppointmentById);
+router.post("/", createAppointment);
+router.delete("/:id", deleteAppointmentById);
+router.put("/:id", updateAppointmentById);
 
 module.exports = router;

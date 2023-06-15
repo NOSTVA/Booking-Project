@@ -4,11 +4,11 @@ const appointmentSchema = new mongoose.Schema(
   {
     expectedTravelDate: {
       type: Date,
-      required: true,
+      required: [true, " expected travel date is required"],
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, "email is required"],
       trim: true,
       lowercase: true,
       validate: {
@@ -22,9 +22,9 @@ const appointmentSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
+      required: [true, "phone is required"],
       trim: true,
-      match: /^\+20\s\d{11}$/,
+      match: /^\+20\d{11}$/,
     },
     note: {
       type: String,
