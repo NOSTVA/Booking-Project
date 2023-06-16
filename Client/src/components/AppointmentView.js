@@ -19,13 +19,14 @@ import {
   CardBody,
   Avatar,
   useBreakpointValue,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  Image,
 } from "@chakra-ui/react";
 
-import { DeleteIcon, CopyIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LinkIcon, AddIcon } from "@chakra-ui/icons";
 
 import {
   useDeleteApplicantMutation,
@@ -46,6 +47,8 @@ function AppointmentView({ appointment }) {
     status,
   } = appointment;
 
+  const [selectedImage, setSelectedImage] = useState("");
+  const [isAvatarModalOpen, SetIsAvatarModalOpen] = useState(false);
   const [editedValues, setEditedValues] = useState({});
   const [deleteApplicant] = useDeleteApplicantMutation();
   const [updateApplicant] = useUpdateApplicantMutation();
@@ -53,6 +56,16 @@ function AppointmentView({ appointment }) {
   const [deleteAppointment] = useDeleteAppointmentMutation();
 
   // controllers
+
+  function onApplicantAvatarOpen(image) {
+    setSelectedImage(image);
+    SetIsAvatarModalOpen(true);
+  }
+  function onApplicantAvatarClose() {
+    setSelectedImage("");
+    SetIsAvatarModalOpen(false);
+  }
+
   function handleDeleteClick(_id) {
     deleteApplicant(_id);
   }
@@ -124,9 +137,9 @@ function AppointmentView({ appointment }) {
     <Stack direction="row">
       <Card variant="outline" size="sm">
         <CardBody>
-          <Card mb={5} size="sm">
-            <CardBody>
-              <Stack direction="row">
+          <Stack direction="row">
+            <Card mb={5} size="sm">
+              <CardBody>
                 <TableContainer>
                   <Table
                     size="sm"
@@ -265,7 +278,9 @@ function AppointmentView({ appointment }) {
                         </Td>
                         <Td textAlign="center" overflow="clip">
                           <Editable
-                            value={editedValues[appointmentId]?.note ?? note}
+                            value={
+                              editedValues[appointmentId]?.note ?? (note || "-")
+                            }
                             onSubmit={() =>
                               handleAppointmentEditClick(appointmentId)
                             }
@@ -275,7 +290,7 @@ function AppointmentView({ appointment }) {
                               handleAppointmentEdit(appointmentId, "note")
                             }>
                             <Tooltip label="Click to edit">
-                              <EditablePreview />
+                              <EditablePreview width="full" />
                             </Tooltip>
                             <EditableInput
                               onChange={(e) =>
@@ -292,32 +307,31 @@ function AppointmentView({ appointment }) {
                     </Tbody>
                   </Table>
                 </TableContainer>
-                <Menu placement="left-start">
-                  <MenuButton
-                    size="sm"
-                    as={IconButton}
-                    aria-label="Options"
-                    icon={<HamburgerIcon />}
-                    variant="outline"
-                  />
-                  <MenuList>
-                    <MenuItem
-                      icon={<DeleteIcon />}
-                      onClick={() => deleteAppointment(appointmentId)}>
-                      Delete
-                    </MenuItem>
-                    <MenuItem
-                      icon={<CopyIcon />}
-                      onClick={() =>
-                        navigator.clipboard.writeText(appointmentId)
-                      }>
-                      Copy Link
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Stack>
-            </CardBody>
-          </Card>
+              </CardBody>
+            </Card>
+            <Stack>
+              <IconButton
+                aria-label="Add Applicant"
+                size="sm"
+                icon={<AddIcon />}
+                variant="outline"
+              />
+              <IconButton
+                aria-label="Copy Link"
+                size="sm"
+                icon={<LinkIcon />}
+                variant="outline"
+                onClick={() => navigator.clipboard.writeText(appointmentId)}
+              />
+              <IconButton
+                aria-label="Delete"
+                size="sm"
+                icon={<DeleteIcon />}
+                variant="outline"
+                onClick={() => deleteAppointment(appointmentId)}
+              />
+            </Stack>
+          </Stack>
           <TableContainer>
             <Table size="sm">
               <Thead>
@@ -344,7 +358,11 @@ function AppointmentView({ appointment }) {
                       <Tr key={_id}>
                         {/* AVATAR */}
                         <Td textAlign="center">
-                          <Avatar src={image} />
+                          <Avatar
+                            style={{ cursor: "pointer" }}
+                            src={image}
+                            onClick={() => onApplicantAvatarOpen(image)}
+                          />
                         </Td>
 
                         {/* FIRST NAME */}
@@ -465,6 +483,16 @@ function AppointmentView({ appointment }) {
           </TableContainer>
         </CardBody>
       </Card>
+      <Modal
+        isCentered={true}
+        isOpen={isAvatarModalOpen}
+        onClose={() => onApplicantAvatarClose()}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <Image src={selectedImage} />
+        </ModalContent>
+      </Modal>
     </Stack>
   );
 }
