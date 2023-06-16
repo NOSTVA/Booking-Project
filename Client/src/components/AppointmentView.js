@@ -18,14 +18,17 @@ import {
   Card,
   CardBody,
   Avatar,
+  useBreakpointValue,
+  CardFooter,
 } from "@chakra-ui/react";
 
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, CopyIcon } from "@chakra-ui/icons";
 
 import {
   useDeleteApplicantMutation,
   useUpdateApplicantMutation,
   useUpdateAppointmentMutation,
+  useDeleteAppointmentMutation,
 } from "../store/api-slice";
 
 function AppointmentView({ appointment }) {
@@ -44,6 +47,7 @@ function AppointmentView({ appointment }) {
   const [deleteApplicant] = useDeleteApplicantMutation();
   const [updateApplicant] = useUpdateApplicantMutation();
   const [updateAppointment] = useUpdateAppointmentMutation();
+  const [deleteAppointment] = useDeleteAppointmentMutation();
 
   // controllers
   function handleDeleteClick(_id) {
@@ -111,16 +115,15 @@ function AppointmentView({ appointment }) {
     }));
   }
 
+  const layout = useBreakpointValue({ base: "default", md: "fixed" });
+
   return (
-    <Card variant={"outline"}>
+    <Card variant="outline" size="sm">
       <CardBody>
-        <Card mb={5}>
+        <Card mb={5} size="sm">
           <CardBody>
             <TableContainer>
-              <Table
-                size="sm"
-                __css={{ "table-layout": "fixed", width: "full" }}
-                variant="simple">
+              <Table size="sm" layout={layout} width="full" variant="simple">
                 <Tbody>
                   <Tr>
                     <Td>
@@ -160,28 +163,23 @@ function AppointmentView({ appointment }) {
                       </Editable>
                     </Td>
                     <Td>
-                      <Text as="b">Note:</Text>
+                      <Text as="b">Status:</Text>
                     </Td>
-                    <Td textAlign="center" overflow="clip">
-                      <Editable
-                        value={editedValues[appointmentId]?.note ?? note}
-                        onSubmit={() =>
-                          handleAppointmentEditClick(appointmentId)
-                        }
-                        onCancel={() => handleCancelClick(appointmentId)}
-                        submitOnBlur={false}
-                        onEdit={() =>
-                          handleAppointmentEdit(appointmentId, "note")
-                        }>
-                        <Tooltip label="Click to edit">
-                          <EditablePreview />
-                        </Tooltip>
-                        <EditableInput
-                          onChange={(e) =>
-                            handleChange(appointmentId, "note", e.target.value)
-                          }
-                        />
-                      </Editable>
+                    <Td>
+                      <Select
+                        textAlign="center"
+                        size="sm"
+                        value={editedValues[appointmentId]?.status ?? status}
+                        onChange={(e) => {
+                          updateAppointment({
+                            id: appointmentId,
+                            data: { status: e.target.value },
+                          });
+                        }}>
+                        <option value="todo">ToDo</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </Select>
                     </Td>
                   </Tr>
                   <Tr>
@@ -209,24 +207,12 @@ function AppointmentView({ appointment }) {
                         />
                       </Editable>
                     </Td>
+
                     <Td>
-                      <Text as="b">Status:</Text>
+                      <Text as="b">No. Applicants:</Text>
                     </Td>
-                    <Td>
-                      <Select
-                        textAlign="center"
-                        size="sm"
-                        value={editedValues[appointmentId]?.status ?? status}
-                        onChange={(e) => {
-                          updateAppointment({
-                            id: appointmentId,
-                            data: { status: e.target.value },
-                          });
-                        }}>
-                        <option value="todo">ToDo</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                      </Select>
+                    <Td textAlign="center">
+                      <Text>{numberOfApplicants.toString()}</Text>
                     </Td>
                   </Tr>
                   <Tr>
@@ -254,17 +240,53 @@ function AppointmentView({ appointment }) {
                         />
                       </Editable>
                     </Td>
+
                     <Td>
-                      <Text as="b">No. Applicants:</Text>
+                      <Text as="b">Note:</Text>
                     </Td>
-                    <Td textAlign="center">
-                      <Text>{numberOfApplicants.toString()}</Text>
+                    <Td textAlign="center" overflow="clip">
+                      <Editable
+                        value={editedValues[appointmentId]?.note ?? note}
+                        onSubmit={() =>
+                          handleAppointmentEditClick(appointmentId)
+                        }
+                        onCancel={() => handleCancelClick(appointmentId)}
+                        submitOnBlur={false}
+                        onEdit={() =>
+                          handleAppointmentEdit(appointmentId, "note")
+                        }>
+                        <Tooltip label="Click to edit">
+                          <EditablePreview />
+                        </Tooltip>
+                        <EditableInput
+                          onChange={(e) =>
+                            handleChange(appointmentId, "note", e.target.value)
+                          }
+                        />
+                      </Editable>
                     </Td>
                   </Tr>
                 </Tbody>
               </Table>
             </TableContainer>
           </CardBody>
+          <CardFooter>
+            <Stack direction="row">
+              <IconButton
+                aria-label="Delete"
+                size="sm"
+                colorScheme="red"
+                onClick={() => deleteAppointment(appointmentId)}
+                icon={<DeleteIcon />}
+              />
+              <IconButton
+                aria-label="Copy link"
+                size="sm"
+                onClick={() => navigator.clipboard.writeText(appointmentId)}
+                icon={<CopyIcon />}
+              />
+            </Stack>
+          </CardFooter>
         </Card>
         <TableContainer>
           <Table size="sm">

@@ -9,9 +9,6 @@ function Dashboard() {
 
   return (
     <Container maxW="6xl" py={10}>
-      <Button onClick={toggleColorMode} mb={5}>
-        {colorMode === "light" ? "Dark" : "Light"}
-      </Button>
       <AppointmentsGridView />
     </Container>
   );

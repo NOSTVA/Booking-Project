@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { Stack, Spinner } from "@chakra-ui/react";
+import {
+  Stack,
+  Spinner,
+  Container,
+  Card,
+  CardBody,
+  Text,
+  Select,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
 
 import { useGetAppointmentsQuery } from "../store/api-slice";
 import AppointmentView from "./AppointmentView";
@@ -8,15 +19,41 @@ import AppointmentView from "./AppointmentView";
 function AppointmentsGridView() {
   const { data: appointments, isSuccess } = useGetAppointmentsQuery();
 
+  const [passportNumberFilter, SetPassportNumberFilter] = useState("");
+
   return (
     <Stack spacing={5}>
+      <Card variant="elevated">
+        <CardBody>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <FormControl>
+              <FormLabel>Applicant Passport Number</FormLabel>
+              <Input
+                type="text"
+                value={passportNumberFilter}
+                placeholder="Search by passport number"
+                onChange={(e) => SetPassportNumberFilter(e.target.value)}
+              />
+            </FormControl>
+          </form>
+        </CardBody>
+      </Card>
       <Stack spacing={5} align="stretch" justify="center">
         {isSuccess ? (
-          appointments.map((appointment) => (
-            <AppointmentView
-              key={appointment._id}
-              appointment={appointment}></AppointmentView>
-          ))
+          appointments
+            .filter(
+              (appointment) =>
+                appointment.applicants.length === 0 ||
+                appointment.applicants.some((applicant) =>
+                  applicant.passportNumber.startsWith(passportNumberFilter)
+                )
+            )
+            .map((appointment) => (
+              <AppointmentView
+                key={appointment._id}
+                appointment={appointment}
+              />
+            ))
         ) : (
           <Spinner
             margin={10}

@@ -8,7 +8,7 @@ import App from "./App";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
 const config = {
-  initialColorMode: "light",
+  initialColorMode: "dark",
   useSystemColorMode: false,
   colors: {
     light: {
