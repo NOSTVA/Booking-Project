@@ -47,6 +47,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Appointment"],
     }),
+
+    createAppointment: builder.mutation({
+      query: (data) => ({
+        url: `/appointments/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -57,4 +65,5 @@ export const {
   useUpdateAppointmentMutation,
   useDeleteApplicantMutation,
   useUpdateApplicantMutation,
+  useCreateAppointmentMutation,
 } = apiSlice;
