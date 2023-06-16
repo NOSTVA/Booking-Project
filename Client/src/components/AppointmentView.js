@@ -344,7 +344,7 @@ function AppointmentView({ appointment }) {
                       <Tr key={_id}>
                         {/* AVATAR */}
                         <Td textAlign="center">
-                          <Avatar size="lg" src={image} />
+                          <Avatar src={image} />
                         </Td>
 
                         {/* FIRST NAME */}
