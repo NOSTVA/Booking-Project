@@ -3,11 +3,8 @@ import React, { useState } from "react";
 import {
   Stack,
   Spinner,
-  Container,
   Card,
   CardBody,
-  Text,
-  Select,
   FormControl,
   FormLabel,
   Input,
@@ -23,12 +20,13 @@ function AppointmentsGridView() {
 
   return (
     <Stack spacing={5}>
-      <Card variant="elevated">
+      <Card variant="outline">
         <CardBody>
           <form onSubmit={(e) => e.preventDefault()}>
             <FormControl>
               <FormLabel>Applicant Passport Number</FormLabel>
               <Input
+                variant="filled"
                 type="text"
                 value={passportNumberFilter}
                 placeholder="Search by passport number"
