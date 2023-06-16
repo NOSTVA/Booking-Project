@@ -7,8 +7,10 @@ const {
   updateApplicantById,
 } = require("../controllers/controller");
 
-router.post("/", addApplicant);
-router.delete("/:id", deleteApplicantById);
-router.patch("/:id", updateApplicantById);
+const { isAuthenticated } = require("../controllers/auth");
+
+router.post("/", isAuthenticated, addApplicant);
+router.delete("/:id", isAuthenticated, deleteApplicantById);
+router.patch("/:id", isAuthenticated, updateApplicantById);
 
 module.exports = router;
