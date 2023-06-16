@@ -9,6 +9,6 @@ const {
 
 router.post("/", addApplicant);
 router.delete("/:id", deleteApplicantById);
-router.put("/:id", updateApplicantById);
+router.patch("/:id", updateApplicantById);
 
 module.exports = router;

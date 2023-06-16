@@ -25,9 +25,8 @@ const applicantSchema = new mongoose.Schema(
     passportNumber: {
       type: String,
       required: [true, "passport number is required"],
-      index: true,
       trim: true,
-      unique: [true, "passport number already exists"],
+      unique: true,
     },
     dateOfBirth: {
       type: Date,
@@ -37,6 +36,16 @@ const applicantSchema = new mongoose.Schema(
           return v < new Date();
         },
         message: (props) => `${props.value} is not a valid date of birth!`,
+      },
+    },
+    image: {
+      type: String,
+      required: [true, "image is required"],
+      validate: {
+        validator: function (v) {
+          return /^https?:\/\/\S+\.\S+$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid image URL!`,
       },
     },
   },
