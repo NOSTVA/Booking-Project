@@ -17,9 +17,6 @@ async function getAppointments(req, res, next) {
       queryObject.owner = owner;
     }
 
-    console.log(req.query);
-    console.log(queryObject);
-
     const appointments = await Appointment.find({
       ...queryObject,
       isDeleted: { $ne: true },

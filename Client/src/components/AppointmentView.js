@@ -139,7 +139,7 @@ function AppointmentView({ appointment, attributes }) {
   const layout = useBreakpointValue({ base: "default", md: "fixed" });
 
   return (
-    <Stack direction="row">
+    <Stack direction="row" align="stretch">
       <Card variant="outline" size="sm">
         <CardBody>
           <Stack direction="row">
