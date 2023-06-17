@@ -9,6 +9,7 @@ import {
   FormLabel,
   Input,
   Select,
+  Container,
 } from "@chakra-ui/react";
 
 import { useGetAppointmentsQuery } from "../store/api-slice";
@@ -29,100 +30,9 @@ function AppointmentsGridView() {
   }
 
   return (
-    <Stack spacing={5}>
-      <Card variant="outline">
-        <CardBody>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <FormControl>
-              <FormLabel>Applicant Passport Number</FormLabel>
-              <Input
-                variant="filled"
-                type="text"
-                value={passportNumberFilter}
-                placeholder="Search by passport number"
-                onChange={(e) => SetPassportNumberFilter(e.target.value)}
-              />
-            </FormControl>
-          </form>
-        </CardBody>
-      </Card>
-
-      <Card variant="outline">
-        <CardBody>
-          <Stack direction="row">
-            <Select
-              value={filterField.owner}
-              onChange={(e) => onFilterChange("owner", e.target.value)}>
-              <option value="">All</option>
-              {isSuccess &&
-                data.attributes.ownerEmuns.map((value, index) => {
-                  return (
-                    <option key={index} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-            </Select>
-            <Select
-              value={filterField.visa}
-              onChange={(e) => onFilterChange("visa", e.target.value)}>
-              <option value="">All</option>
-              {isSuccess &&
-                data.attributes.visaEmuns.map((value, index) => {
-                  return (
-                    <option key={index} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-            </Select>
-            <Select
-              value={filterField.status}
-              onChange={(e) => onFilterChange("status", e.target.value)}>
-              <option value="">All</option>
-              {isSuccess &&
-                data.attributes.statusEmuns.map((value, index) => {
-                  return (
-                    <option key={index} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-            </Select>
-          </Stack>
-        </CardBody>
-      </Card>
-
-      <Stack spacing={5} align="stretch" justify="center" alignItems="center">
-        {!isLoading ? (
-          isSuccess &&
-          data.payload
-            .filter(
-              (appointment) =>
-                appointment.applicants.length === 0 ||
-                appointment.applicants.some((applicant) =>
-                  applicant.passportNumber.startsWith(passportNumberFilter)
-                )
-            )
-            .map((appointment) => (
-              <AppointmentView
-                key={appointment._id}
-                appointment={appointment}
-                attributes={data.attributes}
-              />
-            ))
-        ) : (
-          <Spinner
-            margin={10}
-            thickness="4px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="blue.500"
-            size="xl"
-          />
-        )}
-      </Stack>
-    </Stack>
+    <Container maxW="6xl" py={10}>
+      MainForm
+    </Container>
   );
 }
 

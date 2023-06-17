@@ -1,11 +1,12 @@
-import React from "react";
+import { Container } from "@chakra-ui/react";
+import MainForm from "../components/MainForm";
 
-const CreateAppo = () => {
+const CreateAppointment = () => {
   return (
-    <div>
-      <h1>Hello</h1>
-    </div>
+    <Container maxW="6xl" py={10}>
+      <MainForm />
+    </Container>
   );
 };
 
-export default CreateAppo;
+export default CreateAppointment;
