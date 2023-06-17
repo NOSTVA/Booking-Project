@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Attributes = require("./attributes");
 
 const appointmentSchema = new mongoose.Schema(
   {
@@ -11,7 +12,6 @@ const appointmentSchema = new mongoose.Schema(
       required: [true, "email is required"],
       trim: true,
       lowercase: true,
-      unique: true,
       validate: {
         validator: function (v) {
           return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -34,8 +34,25 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "todo",
-      enum: ["todo", "completed", "cancelled"],
+      default: "pending",
+      enum: Attributes.statusEnums,
+      index: true,
+    },
+    owner: {
+      type: String,
+      default: "none",
+      enum: Attributes.ownerEnums,
+      index: true,
+    },
+    visa: {
+      type: String,
+      default: "none",
+      enum: Attributes.visaEnums,
+      index: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

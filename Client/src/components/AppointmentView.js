@@ -35,7 +35,7 @@ import {
   useDeleteAppointmentMutation,
 } from "../store/api-slice";
 
-function AppointmentView({ appointment }) {
+function AppointmentView({ appointment, attributes }) {
   const {
     _id: appointmentId,
     applicants,
@@ -45,22 +45,27 @@ function AppointmentView({ appointment }) {
     phone,
     note,
     status,
+    owner,
+    visa,
   } = appointment;
+
+  const { ownerEmuns, visaEmuns, statusEmuns } = attributes;
 
   const [selectedImage, setSelectedImage] = useState("");
   const [isAvatarModalOpen, SetIsAvatarModalOpen] = useState(false);
   const [editedValues, setEditedValues] = useState({});
+
   const [deleteApplicant] = useDeleteApplicantMutation();
   const [updateApplicant] = useUpdateApplicantMutation();
   const [updateAppointment] = useUpdateAppointmentMutation();
   const [deleteAppointment] = useDeleteAppointmentMutation();
 
   // controllers
-
   function onApplicantAvatarOpen(image) {
     setSelectedImage(image);
     SetIsAvatarModalOpen(true);
   }
+
   function onApplicantAvatarClose() {
     setSelectedImage("");
     SetIsAvatarModalOpen(false);
@@ -200,9 +205,11 @@ function AppointmentView({ appointment }) {
                                 data: { status: e.target.value },
                               });
                             }}>
-                            <option value="todo">ToDo</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
+                            {statusEmuns.map((value, index) => (
+                              <option key={index} value={value}>
+                                {value}
+                              </option>
+                            ))}
                           </Select>
                         </Td>
                       </Tr>
@@ -237,10 +244,25 @@ function AppointmentView({ appointment }) {
                         </Td>
 
                         <Td>
-                          <Text as="b">No. Applicants:</Text>
+                          <Text as="b">Visa:</Text>
                         </Td>
                         <Td textAlign="center">
-                          <Text>{numberOfApplicants.toString()}</Text>
+                          <Select
+                            textAlign="center"
+                            size="sm"
+                            value={editedValues[appointmentId]?.visa ?? visa}
+                            onChange={(e) => {
+                              updateAppointment({
+                                id: appointmentId,
+                                data: { visa: e.target.value },
+                              });
+                            }}>
+                            {visaEmuns.map((value, index) => (
+                              <option key={index} value={value}>
+                                {value}
+                              </option>
+                            ))}
+                          </Select>
                         </Td>
                       </Tr>
                       <Tr>
@@ -272,7 +294,29 @@ function AppointmentView({ appointment }) {
                             />
                           </Editable>
                         </Td>
-
+                        <Td>
+                          <Text as="b">Owner:</Text>
+                        </Td>
+                        <Td textAlign="center">
+                          <Select
+                            textAlign="center"
+                            size="sm"
+                            value={editedValues[appointmentId]?.owner ?? owner}
+                            onChange={(e) => {
+                              updateAppointment({
+                                id: appointmentId,
+                                data: { owner: e.target.value },
+                              });
+                            }}>
+                            {ownerEmuns.map((value, index) => (
+                              <option key={index} value={value}>
+                                {value}
+                              </option>
+                            ))}
+                          </Select>
+                        </Td>
+                      </Tr>
+                      <Tr>
                         <Td>
                           <Text as="b">Note:</Text>
                         </Td>
@@ -303,6 +347,15 @@ function AppointmentView({ appointment }) {
                             />
                           </Editable>
                         </Td>
+
+                        <Td>
+                          <Text as="b">No. Applicants:</Text>
+                        </Td>
+                        <Td textAlign="center">
+                          <Text>{numberOfApplicants.toString()}</Text>
+                        </Td>
+
+                        {/* asdasdasd */}
                       </Tr>
                     </Tbody>
                   </Table>

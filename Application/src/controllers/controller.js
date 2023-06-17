@@ -1,19 +1,39 @@
 const Applicant = require("../model/applicant");
 const Appointment = require("../model/appointment");
-const mongoose = require("mongoose");
 
 // appointment controllers
 async function getAppointments(req, res, next) {
   try {
-    const appointments = await Appointment.find()
-      .select("-__v -updatedAt")
+    const { visa, status, owner } = req.query;
+    const queryObject = {};
+
+    if (visa) {
+      queryObject.visa = visa;
+    }
+    if (status) {
+      queryObject.status = status;
+    }
+    if (owner) {
+      queryObject.owner = owner;
+    }
+
+    console.log(req.query);
+    console.log(queryObject);
+
+    const appointments = await Appointment.find({
+      ...queryObject,
+      isDeleted: { $ne: true },
+    })
+      .select("-__v -updatedAt -isDeleted")
       .lean();
-    const data = await Promise.all(
+
+    const payload = await Promise.all(
       appointments.map(async (appointment) => {
         const applicants = await Applicant.find({
           appointment: appointment._id,
+          isDeleted: { $ne: true },
         })
-          .select("-__v -updatedAt -createdAt")
+          .select("-__v -updatedAt -createdAt -isDeleted -appointment")
           .lean();
         return {
           ...appointment,
@@ -22,7 +42,15 @@ async function getAppointments(req, res, next) {
         };
       })
     );
-    res.json(data);
+
+    const ownerEmuns = await Appointment.schema.path("owner").options.enum;
+    const visaEmuns = await Appointment.schema.path("visa").options.enum;
+    const statusEmuns = await Appointment.schema.path("status").options.enum;
+
+    res.json({
+      payload,
+      attributes: { ownerEmuns, visaEmuns, statusEmuns },
+    });
   } catch (err) {
     next(err);
   }
@@ -31,7 +59,10 @@ async function getAppointments(req, res, next) {
 async function getAppointmentById(req, res, next) {
   try {
     const { id } = req.params;
-    const appointment = await Appointment.findById(id);
+    const appointment = await Appointment.findOne({
+      _id: id,
+      isDeleted: { $ne: true },
+    });
     res.json(appointment);
   } catch (err) {
     next(err);
@@ -77,8 +108,8 @@ async function deleteAppointmentById(req, res, next) {
   try {
     const { id } = req.params;
 
-    await Appointment.deleteOne({ _id: id });
-    await Applicant.deleteMany({ appointment: id });
+    await Appointment.findByIdAndUpdate(id, { isDeleted: true });
+    await Applicant.updateMany({ appointment: id }, { isDeleted: true });
 
     res.status(201).json({ message: "appointment deleted successfully." });
   } catch (err) {
@@ -89,7 +120,8 @@ async function deleteAppointmentById(req, res, next) {
 async function updateAppointmentById(req, res, next) {
   try {
     const { id } = req.params;
-    const { expectedTravelDate, email, phone, note, status } = req.body;
+    const { expectedTravelDate, email, phone, note, status, owner, visa } =
+      req.body;
 
     const updateQuery = {};
 
@@ -111,6 +143,14 @@ async function updateAppointmentById(req, res, next) {
 
     if (status !== undefined) {
       updateQuery.status = status;
+    }
+
+    if (owner !== undefined) {
+      updateQuery.owner = owner;
+    }
+
+    if (visa !== undefined) {
+      updateQuery.visa = visa;
     }
 
     const updatedAppointment = await Appointment.findByIdAndUpdate(
@@ -152,7 +192,9 @@ async function addApplicant(req, res, next) {
 async function deleteApplicantById(req, res, next) {
   try {
     const { id } = req.params;
-    const applicant = await Applicant.findByIdAndDelete(id);
+    const applicant = await Applicant.findByIdAndUpdate(id, {
+      isDeleted: true,
+    });
 
     if (!applicant) {
       return res.status(404).json({ message: "Applicant not found" });

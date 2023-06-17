@@ -18,10 +18,11 @@ const SessionStore = MongoStore.create({ mongoUrl: process.env.MONGO_URI });
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:3001",
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -51,7 +52,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     error: {
       status: "Internal server error",
-      message: err.message,
     },
   });
 });

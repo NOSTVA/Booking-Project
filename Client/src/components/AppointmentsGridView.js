@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Stack,
@@ -8,15 +8,25 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
 } from "@chakra-ui/react";
 
 import { useGetAppointmentsQuery } from "../store/api-slice";
 import AppointmentView from "./AppointmentView";
 
 function AppointmentsGridView() {
-  const { data: appointments, isSuccess } = useGetAppointmentsQuery();
-
   const [passportNumberFilter, SetPassportNumberFilter] = useState("");
+  const [filterField, setFilterFields] = useState({
+    owner: "",
+    visa: "",
+    status: "",
+  });
+
+  const { data, isSuccess, isLoading } = useGetAppointmentsQuery(filterField);
+
+  function onFilterChange(field, value) {
+    setFilterFields((prev) => ({ ...prev, [field]: value }));
+  }
 
   return (
     <Stack spacing={5}>
@@ -36,9 +46,57 @@ function AppointmentsGridView() {
           </form>
         </CardBody>
       </Card>
-      <Stack spacing={5} align="stretch" justify="center">
-        {isSuccess ? (
-          appointments
+
+      <Card variant="outline">
+        <CardBody>
+          <Stack direction="row">
+            <Select
+              value={filterField.owner}
+              onChange={(e) => onFilterChange("owner", e.target.value)}>
+              <option value="">All</option>
+              {isSuccess &&
+                data.attributes.ownerEmuns.map((value, index) => {
+                  return (
+                    <option key={index} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
+            </Select>
+            <Select
+              value={filterField.visa}
+              onChange={(e) => onFilterChange("visa", e.target.value)}>
+              <option value="">All</option>
+              {isSuccess &&
+                data.attributes.visaEmuns.map((value, index) => {
+                  return (
+                    <option key={index} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
+            </Select>
+            <Select
+              value={filterField.status}
+              onChange={(e) => onFilterChange("status", e.target.value)}>
+              <option value="">All</option>
+              {isSuccess &&
+                data.attributes.statusEmuns.map((value, index) => {
+                  return (
+                    <option key={index} value={value}>
+                      {value}
+                    </option>
+                  );
+                })}
+            </Select>
+          </Stack>
+        </CardBody>
+      </Card>
+
+      <Stack spacing={5} align="stretch" justify="center" alignItems="center">
+        {!isLoading ? (
+          isSuccess &&
+          data.payload
             .filter(
               (appointment) =>
                 appointment.applicants.length === 0 ||
@@ -50,6 +108,7 @@ function AppointmentsGridView() {
               <AppointmentView
                 key={appointment._id}
                 appointment={appointment}
+                attributes={data.attributes}
               />
             ))
         ) : (

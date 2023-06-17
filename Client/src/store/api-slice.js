@@ -13,7 +13,8 @@ export const apiSlice = createApi({
     }),
 
     getAppointments: builder.query({
-      query: () => "/appointments",
+      query: ({ owner, status, visa }) =>
+        `/appointments?owner=${owner}&status=${status}&visa=${visa}`,
       providesTags: ["Appointment"],
     }),
 
