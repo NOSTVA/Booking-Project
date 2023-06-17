@@ -30,65 +30,61 @@ function AppointmentsGridView() {
 
   return (
     <Stack spacing={5}>
-      <Card variant="outline">
+      <Card variant="outline" size="sm">
         <CardBody>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <FormControl>
-              <FormLabel>Applicant Passport Number</FormLabel>
-              <Input
-                variant="filled"
-                type="text"
-                value={passportNumberFilter}
-                placeholder="Search by passport number"
-                onChange={(e) => SetPassportNumberFilter(e.target.value)}
-              />
-            </FormControl>
-          </form>
-        </CardBody>
-      </Card>
-
-      <Card variant="outline">
-        <CardBody>
-          <Stack direction="row">
-            <Select
-              value={filterField.owner}
-              onChange={(e) => onFilterChange("owner", e.target.value)}>
-              <option value="">All</option>
-              {isSuccess &&
-                data.attributes.ownerEmuns.map((value, index) => {
-                  return (
-                    <option key={index} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-            </Select>
-            <Select
-              value={filterField.visa}
-              onChange={(e) => onFilterChange("visa", e.target.value)}>
-              <option value="">All</option>
-              {isSuccess &&
-                data.attributes.visaEmuns.map((value, index) => {
-                  return (
-                    <option key={index} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-            </Select>
-            <Select
-              value={filterField.status}
-              onChange={(e) => onFilterChange("status", e.target.value)}>
-              <option value="">All</option>
-              {isSuccess &&
-                data.attributes.statusEmuns.map((value, index) => {
-                  return (
-                    <option key={index} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-            </Select>
+          <Stack>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <FormControl>
+                <Input
+                  variant="filled"
+                  type="text"
+                  value={passportNumberFilter}
+                  placeholder="Search by passport number"
+                  onChange={(e) => SetPassportNumberFilter(e.target.value)}
+                />
+              </FormControl>
+            </form>
+            <Stack direction="row">
+              <Select
+                value={filterField.owner}
+                onChange={(e) => onFilterChange("owner", e.target.value)}>
+                <option value="">All</option>
+                {isSuccess &&
+                  data.attributes.ownerEmuns.map((value, index) => {
+                    return (
+                      <option key={index} value={value}>
+                        {value}
+                      </option>
+                    );
+                  })}
+              </Select>
+              <Select
+                value={filterField.visa}
+                onChange={(e) => onFilterChange("visa", e.target.value)}>
+                <option value="">All</option>
+                {isSuccess &&
+                  data.attributes.visaEmuns.map((value, index) => {
+                    return (
+                      <option key={index} value={value}>
+                        {value}
+                      </option>
+                    );
+                  })}
+              </Select>
+              <Select
+                value={filterField.status}
+                onChange={(e) => onFilterChange("status", e.target.value)}>
+                <option value="">All</option>
+                {isSuccess &&
+                  data.attributes.statusEmuns.map((value, index) => {
+                    return (
+                      <option key={index} value={value}>
+                        {value}
+                      </option>
+                    );
+                  })}
+              </Select>
+            </Stack>
           </Stack>
         </CardBody>
       </Card>
