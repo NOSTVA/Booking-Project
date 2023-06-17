@@ -30,11 +30,6 @@ function AppointmentsGridView() {
   }
 
   return (
-<<<<<<< HEAD
-    <Container maxW="6xl" py={10}>
-      MainForm
-    </Container>
-=======
     <Stack spacing={5}>
       <Card variant="outline" size="sm">
         <CardBody>
@@ -53,7 +48,8 @@ function AppointmentsGridView() {
             <Stack direction="row">
               <Select
                 value={filterField.owner}
-                onChange={(e) => onFilterChange("owner", e.target.value)}>
+                onChange={(e) => onFilterChange("owner", e.target.value)}
+              >
                 <option value="">All</option>
                 {isSuccess &&
                   data.attributes.ownerEmuns.map((value, index) => {
@@ -66,7 +62,8 @@ function AppointmentsGridView() {
               </Select>
               <Select
                 value={filterField.visa}
-                onChange={(e) => onFilterChange("visa", e.target.value)}>
+                onChange={(e) => onFilterChange("visa", e.target.value)}
+              >
                 <option value="">All</option>
                 {isSuccess &&
                   data.attributes.visaEmuns.map((value, index) => {
@@ -79,7 +76,8 @@ function AppointmentsGridView() {
               </Select>
               <Select
                 value={filterField.status}
-                onChange={(e) => onFilterChange("status", e.target.value)}>
+                onChange={(e) => onFilterChange("status", e.target.value)}
+              >
                 <option value="">All</option>
                 {isSuccess &&
                   data.attributes.statusEmuns.map((value, index) => {
@@ -125,7 +123,6 @@ function AppointmentsGridView() {
         )}
       </Stack>
     </Stack>
->>>>>>> 188cac2dd664b57d10a6dff9e8b3e930860edbb4
   );
 }
 
