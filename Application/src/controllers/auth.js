@@ -16,7 +16,12 @@ function requireAdmin(req, res, next) {
   if (req.user && req.user.role === "admin") {
     next();
   } else {
-    res.status(403).send("You're not authorized to access this page");
+    res.status(403).send({
+      error: {
+        status: 403,
+        message: "You're not authorized to access this page",
+      },
+    });
   }
 }
 

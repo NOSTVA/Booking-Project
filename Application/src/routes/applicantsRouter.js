@@ -6,9 +6,10 @@ const {
   deleteApplicantById,
   updateApplicantById,
 } = require("../controllers/controller");
+const { isAuthenticated } = require("../controllers/auth");
 
-router.post("/", addApplicant);
-router.delete("/:id", deleteApplicantById);
-router.patch("/:id", updateApplicantById);
+router.post("/", isAuthenticated, addApplicant);
+router.delete("/:id", isAuthenticated, deleteApplicantById);
+router.patch("/:id", isAuthenticated, updateApplicantById);
 
 module.exports = router;

@@ -43,11 +43,11 @@ require("./passport-config");
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, "../public")));
 app.use(authRouter);
 app.use(clientRouter);
 app.use("/api/v1/appointments", appointmentsRouter);
 app.use("/api/v1/applicants", applicantsRouter);
+app.use(express.static(path.join(__dirname, "../public")));
 
 app.use((err, req, res, next) => {
   console.error(err.message);
