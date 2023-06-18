@@ -178,6 +178,7 @@ const MainFrom = () => {
                   size="md"
                   type="tel"
                   value={applicant.passportNumber}
+                  onKeyDown={handlePhoneKeyDown}
                   onChange={(e) =>
                     handleApplicantChange(
                       index,
