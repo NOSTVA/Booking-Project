@@ -19,12 +19,9 @@ function App() {
   ]);
 
   return (
-    <Box>
-      <Navbar />
-      <Body>
-        <RouterProvider router={router} />
-      </Body>
-    </Box>
+    <Body>
+      <RouterProvider router={router} />
+    </Body>
   );
 }
 
