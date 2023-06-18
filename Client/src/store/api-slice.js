@@ -8,6 +8,10 @@ export const apiSlice = createApi({
   }),
   tagTypes: ["Appointment", "Applicants"],
   endpoints: (builder) => ({
+    getUserData: builder.query({
+      query: () => `/u`,
+    }),
+
     getAppointment: builder.query({
       query: (id) => `/appointments/${id}`,
     }),
@@ -70,4 +74,5 @@ export const {
   useDeleteApplicantMutation,
   useUpdateApplicantMutation,
   useCreateAppointmentMutation,
+  useGetUserDataQuery,
 } = apiSlice;

@@ -1,7 +1,7 @@
 import { Container } from "@chakra-ui/react";
 import MainForm from "../components/MainForm";
 
-const CreateAppointment = () => {
+const Home = () => {
   return (
     <Container maxW="6xl" py={10}>
       <MainForm />
@@ -9,4 +9,4 @@ const CreateAppointment = () => {
   );
 };
 
-export default CreateAppointment;
+export default Home;
