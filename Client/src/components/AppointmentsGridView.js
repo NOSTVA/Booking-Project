@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   Stack,
@@ -6,17 +6,17 @@ import {
   Card,
   CardBody,
   FormControl,
-  FormLabel,
   Input,
   Select,
-  Container,
 } from "@chakra-ui/react";
 
 import { useGetAppointmentsQuery } from "../store/api-slice";
 import AppointmentView from "./AppointmentView";
+import Search from "./Search";
+import Filter from "./Filter";
 
 function AppointmentsGridView() {
-  const [passportNumberFilter, SetPassportNumberFilter] = useState("");
+  const [term, setTerm] = useState("");
   const [filterField, setFilterFields] = useState({
     owner: "",
     visa: "",
@@ -25,75 +25,24 @@ function AppointmentsGridView() {
 
   const { data, isSuccess, isLoading } = useGetAppointmentsQuery(filterField);
 
-  function onFilterChange(field, value) {
-    setFilterFields((prev) => ({ ...prev, [field]: value }));
-  }
-
   return (
     <Stack spacing={5}>
+      {/* Search & Filters */}
       <Card variant="outline" size="sm">
         <CardBody>
           <Stack>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <FormControl>
-                <Input
-                  variant="filled"
-                  type="text"
-                  value={passportNumberFilter}
-                  placeholder="Search by passport number"
-                  onChange={(e) => SetPassportNumberFilter(e.target.value)}
-                />
-              </FormControl>
-            </form>
-            <Stack direction="row">
-              <Select
-                value={filterField.owner}
-                onChange={(e) => onFilterChange("owner", e.target.value)}
-              >
-                <option value="">All</option>
-                {isSuccess &&
-                  data.attributes.ownerEmuns.map((value, index) => {
-                    return (
-                      <option key={index} value={value}>
-                        {value}
-                      </option>
-                    );
-                  })}
-              </Select>
-              <Select
-                value={filterField.visa}
-                onChange={(e) => onFilterChange("visa", e.target.value)}
-              >
-                <option value="">All</option>
-                {isSuccess &&
-                  data.attributes.visaEmuns.map((value, index) => {
-                    return (
-                      <option key={index} value={value}>
-                        {value}
-                      </option>
-                    );
-                  })}
-              </Select>
-              <Select
-                value={filterField.status}
-                onChange={(e) => onFilterChange("status", e.target.value)}
-              >
-                <option value="">All</option>
-                {isSuccess &&
-                  data.attributes.statusEmuns.map((value, index) => {
-                    return (
-                      <option key={index} value={value}>
-                        {value}
-                      </option>
-                    );
-                  })}
-              </Select>
-            </Stack>
+            <Search term={term} setTerm={setTerm} />
+            <Filter
+              filterField={filterField}
+              setFilterFields={setFilterFields}
+              data={data}
+              isSuccess={isSuccess}
+            />
           </Stack>
         </CardBody>
       </Card>
-
-      <Stack spacing={5} align="stretch" justify="center" alignItems="center">
+      {/* Appointmets */}
+      <Stack spacing={5} align="stretch">
         {!isLoading ? (
           isSuccess &&
           data.payload
@@ -101,7 +50,7 @@ function AppointmentsGridView() {
               (appointment) =>
                 appointment.applicants.length === 0 ||
                 appointment.applicants.some((applicant) =>
-                  applicant.passportNumber.startsWith(passportNumberFilter)
+                  applicant.passportNumber.startsWith(term)
                 )
             )
             .map((appointment) => (

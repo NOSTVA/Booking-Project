@@ -26,7 +26,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 
-import { DeleteIcon, LinkIcon, AddIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LinkIcon, AddIcon, CopyIcon } from "@chakra-ui/icons";
 
 import {
   useDeleteApplicantMutation,
@@ -139,7 +139,7 @@ function AppointmentView({ appointment, attributes }) {
   const layout = useBreakpointValue({ base: "default", md: "fixed" });
 
   return (
-    <Stack direction="row" align="stretch">
+    <>
       <Card variant="outline" size="sm">
         <CardBody>
           <Stack direction="row">
@@ -363,26 +363,40 @@ function AppointmentView({ appointment, attributes }) {
               </CardBody>
             </Card>
             <Stack>
-              <IconButton
-                aria-label="Add Applicant"
-                size="sm"
-                icon={<AddIcon />}
-                variant="outline"
-              />
-              <IconButton
-                aria-label="Copy Link"
-                size="sm"
-                icon={<LinkIcon />}
-                variant="outline"
-                onClick={() => navigator.clipboard.writeText(appointmentId)}
-              />
-              <IconButton
-                aria-label="Delete"
-                size="sm"
-                icon={<DeleteIcon />}
-                variant="outline"
-                onClick={() => deleteAppointment(appointmentId)}
-              />
+              <Tooltip label="Copy Code" placement="right">
+                <IconButton
+                  aria-label="Copy Code"
+                  size="sm"
+                  icon={<CopyIcon />}
+                  variant="outline"
+                />
+              </Tooltip>
+              <Tooltip label="Add applicant" placement="right">
+                <IconButton
+                  aria-label="Add Applicant"
+                  size="sm"
+                  icon={<AddIcon />}
+                  variant="outline"
+                />
+              </Tooltip>
+              <Tooltip label="Copy Link" placement="right">
+                <IconButton
+                  aria-label="Copy Link"
+                  size="sm"
+                  icon={<LinkIcon />}
+                  variant="outline"
+                  onClick={() => navigator.clipboard.writeText(appointmentId)}
+                />
+              </Tooltip>
+              <Tooltip label="Delete" placement="right">
+                <IconButton
+                  aria-label="Delete"
+                  size="sm"
+                  icon={<DeleteIcon />}
+                  variant="outline"
+                  onClick={() => deleteAppointment(appointmentId)}
+                />
+              </Tooltip>
             </Stack>
           </Stack>
           <TableContainer>
@@ -546,7 +560,7 @@ function AppointmentView({ appointment, attributes }) {
           <Image src={selectedImage} />
         </ModalContent>
       </Modal>
-    </Stack>
+    </>
   );
 }
 

@@ -4,8 +4,8 @@ import CreateAppointment from "./pages/CreateAppointment";
 
 function App() {
   return (
-    <CreateAppointment />
-    // <Dashboard />
+    // <CreateAppointment />
+    <Dashboard />
   );
 }
 
