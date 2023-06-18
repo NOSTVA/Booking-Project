@@ -54,10 +54,22 @@ const MainFrom = () => {
         duration: null,
         isClosable: false,
         position: "top",
+        duration: 3000,
       });
       return;
     }
 
+    if (applicants.length === 0) {
+      toast({
+        title: "The number of applicants should be at least one applicat",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+        duration: 3000,
+      });
+      return;
+    }
     const formData = {
       expectedTravelDate: e.target.elements.date.value,
       email: input,
@@ -87,16 +99,28 @@ const MainFrom = () => {
   };
 
   const handleAddApplicant = () => {
-    setApplicants([
-      ...applicants,
-      {
-        firstName: "",
-        lastName: "",
-        passportNumber: "",
-        dateOfBirth: "",
-        image: "",
-      },
-    ]);
+    if (applicants.length <= 4) {
+      setApplicants([
+        ...applicants,
+        {
+          firstName: "",
+          lastName: "",
+          passportNumber: "",
+          dateOfBirth: "",
+          image: "",
+        },
+      ]);
+    } else {
+      toast({
+        title: "maximum number of applicants is 5",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+        duration: 3000,
+      });
+      return;
+    }
   };
 
   const handleApplicantChange = (index, field, value) => {
@@ -125,14 +149,11 @@ const MainFrom = () => {
               onClick={() => {
                 handleConfirmDelete(index);
                 toast.closeAll();
-              }}>
+              }}
+            >
               Yes
             </Button>
-            <Button
-              size="sm"
-              bg="black"
-              _hover="black"
-              onClick={() => toast.closeAll()}>
+            <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
               No
             </Button>
           </HStack>
