@@ -59,17 +59,6 @@ const MainFrom = () => {
       return;
     }
 
-    if (applicants.length === 0) {
-      toast({
-        title: "The number of applicants should be at least one applicant",
-        status: "warning",
-        duration: null,
-        isClosable: false,
-        position: "top",
-        duration: 3000,
-      });
-      return;
-    }
     const formData = {
       expectedTravelDate: e.target.elements.date.value,
       email: input,
@@ -130,36 +119,38 @@ const MainFrom = () => {
   };
 
   const handleDeleteApplicant = (index) => {
-    toast({
-      title: "Applicant deleted",
-      status: "warning",
-      duration: null,
-      isClosable: false,
-      position: "top",
-      render: () => (
-        <Stack bg="gray.300" p={4} borderRadius="3">
-          <Text color="black" mb={2}>
-            Are you sure you want to delete this applicant?
-          </Text>
-          <HStack spacing={4} justifyContent="center">
-            <Button
-              colorScheme="red"
-              fontWeight="bold"
-              size="sm"
-              onClick={() => {
-                handleConfirmDelete(index);
-                toast.closeAll();
-              }}
-            >
-              Yes
-            </Button>
-            <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
-              No
-            </Button>
-          </HStack>
-        </Stack>
-      ),
-    });
+    if (applicants.length > 1) {
+      toast({
+        title: "Applicant deleted",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+        render: () => (
+          <Stack bg="gray.300" p={4} borderRadius="3">
+            <Text color="black" mb={2}>
+              Are you sure you want to delete this applicant?
+            </Text>
+            <HStack spacing={4} justifyContent="center">
+              <Button
+                colorScheme="red"
+                fontWeight="bold"
+                size="sm"
+                onClick={() => {
+                  handleConfirmDelete(index);
+                  toast.closeAll();
+                }}
+              >
+                Yes
+              </Button>
+              <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
+                No
+              </Button>
+            </HStack>
+          </Stack>
+        ),
+      });
+    }
   };
 
   const handleConfirmDelete = (index) => {
@@ -227,10 +218,14 @@ const MainFrom = () => {
               <Card key={index} variant="outline" mt={4} mb={4}>
                 <CardBody>
                   <Box position="absolute" top={1} right={2}>
-                    <IconButton
-                      icon={<AiOutlineClose />}
-                      onClick={() => handleDeleteApplicant(index)}
-                    />
+                    {applicants.length > 1 ? (
+                      <IconButton
+                        icon={<AiOutlineClose />}
+                        onClick={() => handleDeleteApplicant(index)}
+                      />
+                    ) : (
+                      ""
+                    )}
                   </Box>
                   <Box mb={4}>
                     <FormLabel>First name</FormLabel>
