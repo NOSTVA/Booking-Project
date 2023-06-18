@@ -55,6 +55,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Appointment"],
     }),
   }),
 });

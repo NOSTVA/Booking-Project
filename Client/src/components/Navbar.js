@@ -7,13 +7,15 @@ import {
   Button,
   Stack,
   Collapse,
-  Link,
   Popover,
   PopoverTrigger,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
+
+import { Link } from "react-router-dom";
+
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
 export default function Navbar() {
@@ -82,7 +84,7 @@ const DesktopNav = () => {
               <PopoverTrigger>
                 <Link
                   p={2}
-                  href={navItem.href ?? "#"}
+                  to={navItem.href ?? "#"}
                   fontSize={"sm"}
                   fontWeight={500}
                   color={linkColor}
@@ -122,7 +124,7 @@ const MobileNavItem = ({ label, children, href }) => {
       <Flex
         py={2}
         as={Link}
-        href={href ?? "#"}
+        to={href ?? "#"}
         justify={"space-between"}
         align={"center"}
         _hover={{
@@ -169,9 +171,5 @@ const NAV_ITEMS = [
     label: "Dashboard",
     href: "/dashboard",
     adminOnly: true,
-  },
-  {
-    label: "My Appointments",
-    href: "#",
   },
 ];

@@ -124,11 +124,14 @@ const MainFrom = () => {
               onClick={() => {
                 handleConfirmDelete(index);
                 toast.closeAll();
-              }}
-            >
+              }}>
               Yes
             </Button>
-            <Button size="sm" bg="black" _hover="black" onClick={() => toast.closeAll()}>
+            <Button
+              size="sm"
+              bg="black"
+              _hover="black"
+              onClick={() => toast.closeAll()}>
               No
             </Button>
           </HStack>
