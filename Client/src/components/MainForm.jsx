@@ -61,7 +61,7 @@ const MainFrom = () => {
 
     if (applicants.length === 0) {
       toast({
-        title: "The number of applicants should be at least one applicat",
+        title: "The number of applicants should be at least one applicant",
         status: "warning",
         duration: null,
         isClosable: false,
