@@ -22,7 +22,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useToast } from "@chakra-ui/react";
 
 const MainFrom = () => {
-  const [createAppointment] = useCreateAppointmentMutation();
+  const [createAppointment, { isLoading }] = useCreateAppointmentMutation();
   const [input, setInput] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -45,6 +45,17 @@ const MainFrom = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitted(true);
+
+    if (input === "" || phoneNumber === "") {
+      toast({
+        title: "Please fill in all required fields",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+      });
+      return;
+    }
 
     const formData = {
       expectedTravelDate: e.target.elements.date.value,
@@ -101,9 +112,11 @@ const MainFrom = () => {
       isClosable: false,
       position: "top",
       render: () => (
-        <Stack>
-          <Text mb={2}>Are you sure you want to delete this applicant?</Text>
-          <HStack spacing={4}>
+        <Stack bg="#f7fafc" p={4} borderRadius="3">
+          <Text color="black" mb={2}>
+            Are you sure you want to delete this applicant?
+          </Text>
+          <HStack spacing={4} justifyContent="center">
             <Button
               colorScheme="red"
               fontWeight="bold"
