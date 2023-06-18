@@ -12,9 +12,8 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
-
-import { Link } from "react-router-dom";
 
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
@@ -84,7 +83,7 @@ const DesktopNav = () => {
               <PopoverTrigger>
                 <Link
                   p={2}
-                  to={navItem.href ?? "#"}
+                  href={navItem.href ?? "#"}
                   fontSize={"sm"}
                   fontWeight={500}
                   color={linkColor}
@@ -124,7 +123,7 @@ const MobileNavItem = ({ label, children, href }) => {
       <Flex
         py={2}
         as={Link}
-        to={href ?? "#"}
+        href={href ?? "#"}
         justify={"space-between"}
         align={"center"}
         _hover={{

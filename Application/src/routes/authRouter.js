@@ -6,15 +6,6 @@ const path = require("path");
 
 const { isAuthenticated, isNotAuthenticated } = require("../controllers/auth");
 
-// authentication pages
-router.get("/register", isNotAuthenticated, function (req, res) {
-  next();
-});
-
-router.get("/login", isNotAuthenticated, function (req, res) {
-  next();
-});
-
 // authentication api
 router.post(
   "/login",
@@ -50,9 +41,17 @@ router.get("/u", isAuthenticated, function (req, res) {
   res.status(200).json(req.user);
 });
 
-// authentication route
-// router.use(isAuthenticated, function (req, res) {
-//   res.status(200).send("User Authenticated");
-// });
+router.get("/register", isNotAuthenticated, function (req, res) {
+  res.sendFile(path.join(__dirname, "../public/register.html"));
+});
+
+router.get("/login", isNotAuthenticated, function (req, res) {
+  res.sendFile(path.join(__dirname, "../public/login.html"));
+});
+
+// authenticate all requests
+router.use(isAuthenticated, (req, res, next) => {
+  next();
+});
 
 module.exports = router;

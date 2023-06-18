@@ -9,9 +9,9 @@ const {
   updateAppointmentById,
 } = require("../controllers/controller");
 
-const { isAuthenticated, requireAdmin } = require("../controllers/auth");
+const { requireAdmin } = require("../controllers/auth");
 
-router.get("/", getAppointments);
+router.get("/", requireAdmin, getAppointments);
 router.get("/:id", getAppointmentById);
 router.post("/", createAppointment);
 router.delete("/:id", deleteAppointmentById);
