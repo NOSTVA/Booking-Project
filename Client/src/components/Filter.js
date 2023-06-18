@@ -14,13 +14,13 @@ function Filter({ filterField, setFilterFields, data, isSuccess }) {
           onChange={(value) => onSelectChange("owner", value)}
         />
         <SelectFilter
-          options={data.attributes.ownerEmuns}
-          value={filterField.owner}
+          options={data.attributes.visaEmuns}
+          value={filterField.visa}
           onChange={(value) => onSelectChange("visa", value)}
         />
         <SelectFilter
-          options={data.attributes.ownerEmuns}
-          value={filterField.owner}
+          options={data.attributes.statusEmuns}
+          value={filterField.status}
           onChange={(value) => onSelectChange("status", value)}
         />
       </Stack>
