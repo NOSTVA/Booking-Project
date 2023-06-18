@@ -34,7 +34,7 @@ function AppointmentsGridView() {
         </CardBody>
       </Card>
       {/* Appointmets */}
-      <Stack spacing={5} align="stretch" alignItems="center">
+      <Stack spacing={5}>
         {!isLoading ? (
           isSuccess &&
           data.payload
