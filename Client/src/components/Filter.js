@@ -5,31 +5,38 @@ function Filter({ filterField, setFilterFields, data, isSuccess }) {
     setFilterFields((prev) => ({ ...prev, [field]: value }));
   };
 
-  const SelectFilter = (options, value, onChange) => (
-    <Select value={value} onChange={(e) => onChange(e.target.value)}>
-      <option value="">All</option>
-      {isSuccess &&
-        options.map((value, index) => (
-          <option key={index} value={value}>
-            {value}
-          </option>
-        ))}
-    </Select>
-  );
-
   return (
-    <Stack direction="row">
-      {SelectFilter(data.attributes.ownerEmuns, filterField.owner, (value) =>
-        onSelectChange("owner", "value")
-      )}
-      {SelectFilter(data.attributes.visaEmuns, filterField.visa, (value) =>
-        onSelectChange("visa", "value")
-      )}
-      {SelectFilter(data.attributes.statusEmuns, filterField.status, (value) =>
-        onSelectChange("status", "value")
-      )}
-    </Stack>
+    isSuccess && (
+      <Stack direction="row">
+        <SelectFilter
+          options={data.attributes.ownerEmuns}
+          value={filterField.owner}
+          onChange={(value) => onSelectChange("owner", value)}
+        />
+        <SelectFilter
+          options={data.attributes.ownerEmuns}
+          value={filterField.owner}
+          onChange={(value) => onSelectChange("visa", value)}
+        />
+        <SelectFilter
+          options={data.attributes.ownerEmuns}
+          value={filterField.owner}
+          onChange={(value) => onSelectChange("status", value)}
+        />
+      </Stack>
+    )
   );
 }
+
+const SelectFilter = ({ options, value, onChange }) => (
+  <Select value={value} onChange={(e) => onChange(e.target.value)}>
+    <option value="">All</option>
+    {options.map((value, index) => (
+      <option key={index} value={value}>
+        {value}
+      </option>
+    ))}
+  </Select>
+);
 
 export default Filter;
