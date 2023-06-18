@@ -12,6 +12,7 @@ const bodyParser = require("body-parser");
 const appointmentsRouter = require("../routes/appointmentsRouter");
 const applicantsRouter = require("../routes/applicantsRouter");
 const authRouter = require("../routes/authRouter");
+const clientRouter = require("../routes/clientRouter");
 
 const app = express();
 const SessionStore = MongoStore.create({ mongoUrl: process.env.MONGO_URI });
@@ -42,8 +43,9 @@ require("./passport-config");
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(authRouter);
 app.use(express.static(path.join(__dirname, "../public")));
+app.use(authRouter);
+app.use(clientRouter);
 app.use("/api/v1/appointments", appointmentsRouter);
 app.use("/api/v1/applicants", applicantsRouter);
 
@@ -52,7 +54,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     error: {
       status: "Internal server error",
-      msg: err.message
+      msg: err.message,
     },
   });
 });
