@@ -16,6 +16,7 @@ import {
   IconButton,
   Text,
   HStack,
+  Spinner,
 } from "@chakra-ui/react";
 import { useCreateAppointmentMutation } from "../store/api-slice";
 import { AiOutlineClose } from "react-icons/ai";
@@ -128,7 +129,12 @@ const MainFrom = () => {
             >
               Yes
             </Button>
-            <Button size="sm" bg="black" _hover="black" onClick={() => toast.closeAll()}>
+            <Button
+              size="sm"
+              bg="black"
+              _hover="black"
+              onClick={() => toast.closeAll()}
+            >
               No
             </Button>
           </HStack>
@@ -143,144 +149,167 @@ const MainFrom = () => {
     setApplicants(newApplicants);
   };
   return (
-    <Stack spacing={5}>
-      <Heading>Appointment</Heading>
-      <form onSubmit={handleSubmit}>
-        <Card variant="outline">
-          <CardBody>
-            <Box mb={4}>
-              <FormLabel>Expected travel date</FormLabel>
-              <Input
-                name="date"
-                placeholder="Select Date and Time"
-                size="md"
-                type="date"
-              />
-            </Box>
-            <Box mb={4}>
-              <FormControl isInvalid={isError}>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  value={input}
-                  onChange={handleInputChange}
-                />
-                {isError && (
-                  <FormErrorMessage>Email is required.</FormErrorMessage>
-                )}
-              </FormControl>
-            </Box>
-            <Box>
-              <FormControl isInvalid={isError}>
-                <FormLabel>Phone number</FormLabel>
-                <InputGroup>
-                  <InputLeftAddon children="+20" />
+    <Stack>
+      {!isLoading ? (
+        <Stack spacing={5}>
+          <Heading>Appointment</Heading>
+          <form onSubmit={handleSubmit}>
+            <Card variant="outline">
+              <CardBody>
+                <Box mb={4}>
+                  <FormLabel>Expected travel date</FormLabel>
                   <Input
-                    type="tel"
-                    placeholder="phone number"
-                    pattern="[0-9]*"
-                    maxLength="11"
-                    value={phoneNumber}
-                    onKeyDown={handlePhoneKeyDown}
-                    onChange={(e) => handlePhoneChange(e)}
+                    name="date"
+                    placeholder="Select Date and Time"
+                    size="md"
+                    type="date"
                   />
-                </InputGroup>
-                {isError && (
-                  <FormErrorMessage>phone number is required.</FormErrorMessage>
-                )}
-              </FormControl>
+                </Box>
+                <Box mb={4}>
+                  <FormControl isInvalid={isError}>
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      placeholder="Email"
+                      type="email"
+                      value={input}
+                      onChange={handleInputChange}
+                    />
+                    {isError && (
+                      <FormErrorMessage>Email is required.</FormErrorMessage>
+                    )}
+                  </FormControl>
+                </Box>
+                <Box>
+                  <FormControl isInvalid={isError}>
+                    <FormLabel>Phone number</FormLabel>
+                    <InputGroup>
+                      <InputLeftAddon children="+20" />
+                      <Input
+                        type="tel"
+                        placeholder="phone number"
+                        pattern="[0-9]*"
+                        maxLength="11"
+                        value={phoneNumber}
+                        onKeyDown={handlePhoneKeyDown}
+                        onChange={(e) => handlePhoneChange(e)}
+                      />
+                    </InputGroup>
+                    {isError && (
+                      <FormErrorMessage>
+                        phone number is required.
+                      </FormErrorMessage>
+                    )}
+                  </FormControl>
+                </Box>
+              </CardBody>
+            </Card>
+            <Heading mt={4}>Applicants</Heading>
+            {applicants.map((applicant, index) => (
+              <Card key={index} variant="outline" mt={4} mb={4}>
+                <CardBody>
+                  <Box position="absolute" top={1} right={2}>
+                    <IconButton
+                      icon={<AiOutlineClose />}
+                      onClick={() => handleDeleteApplicant(index)}
+                    />
+                  </Box>
+                  <Box mb={4}>
+                    <FormLabel>First name</FormLabel>
+                    <Input
+                      placeholder="First name"
+                      size="md"
+                      type="text"
+                      value={applicant.firstName}
+                      onChange={(e) =>
+                        handleApplicantChange(
+                          index,
+                          "firstName",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Box>
+                  <Box mb={4}>
+                    <FormLabel>Last name</FormLabel>
+                    <Input
+                      placeholder="Last name"
+                      size="md"
+                      type="text"
+                      value={applicant.lastName}
+                      onChange={(e) =>
+                        handleApplicantChange(index, "lastName", e.target.value)
+                      }
+                    />
+                  </Box>
+                  <Box mb={4}>
+                    <FormLabel>Passport number</FormLabel>
+                    <Input
+                      placeholder="Passport number"
+                      size="md"
+                      type="tel"
+                      value={applicant.passportNumber}
+                      onKeyDown={handlePhoneKeyDown}
+                      onChange={(e) =>
+                        handleApplicantChange(
+                          index,
+                          "passportNumber",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Box>
+                  <Box mb={4}>
+                    <FormLabel>Date of birth</FormLabel>
+                    <Input
+                      placeholder="Passport number"
+                      size="md"
+                      type="date"
+                      value={applicant.dateOfBirth}
+                      onChange={(e) =>
+                        handleApplicantChange(
+                          index,
+                          "dateOfBirth",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Box>
+                  <Box mb={4}>
+                    <FormLabel>Image</FormLabel>
+                    <Input
+                      placeholder="Image"
+                      size="md"
+                      type="text"
+                      // p={1}
+                      value={applicant.image}
+                      onChange={(e) =>
+                        handleApplicantChange(index, "image", e.target.value)
+                      }
+                    />
+                  </Box>
+                </CardBody>
+              </Card>
+            ))}
+            <Box mb={4} mt={4}>
+              <Button type="button" onClick={handleAddApplicant}>
+                Add applicant
+              </Button>
             </Box>
-          </CardBody>
-        </Card>
-        <Heading mt={4}>Applicants</Heading>
-        {applicants.map((applicant, index) => (
-          <Card key={index} variant="outline" mt={4} mb={4}>
-            <CardBody>
-              <Box position="absolute" top={1} right={2}>
-                <IconButton
-                  icon={<AiOutlineClose />}
-                  onClick={() => handleDeleteApplicant(index)}
-                />
-              </Box>
-              <Box mb={4}>
-                <FormLabel>First name</FormLabel>
-                <Input
-                  placeholder="First name"
-                  size="md"
-                  type="text"
-                  value={applicant.firstName}
-                  onChange={(e) =>
-                    handleApplicantChange(index, "firstName", e.target.value)
-                  }
-                />
-              </Box>
-              <Box mb={4}>
-                <FormLabel>Last name</FormLabel>
-                <Input
-                  placeholder="Last name"
-                  size="md"
-                  type="text"
-                  value={applicant.lastName}
-                  onChange={(e) =>
-                    handleApplicantChange(index, "lastName", e.target.value)
-                  }
-                />
-              </Box>
-              <Box mb={4}>
-                <FormLabel>Passport number</FormLabel>
-                <Input
-                  placeholder="Passport number"
-                  size="md"
-                  type="tel"
-                  value={applicant.passportNumber}
-                  onKeyDown={handlePhoneKeyDown}
-                  onChange={(e) =>
-                    handleApplicantChange(
-                      index,
-                      "passportNumber",
-                      e.target.value
-                    )
-                  }
-                />
-              </Box>
-              <Box mb={4}>
-                <FormLabel>Date of birth</FormLabel>
-                <Input
-                  placeholder="Passport number"
-                  size="md"
-                  type="date"
-                  value={applicant.dateOfBirth}
-                  onChange={(e) =>
-                    handleApplicantChange(index, "dateOfBirth", e.target.value)
-                  }
-                />
-              </Box>
-              <Box mb={4}>
-                <FormLabel>Image</FormLabel>
-                <Input
-                  placeholder="Image"
-                  size="md"
-                  type="text"
-                  // p={1}
-                  value={applicant.image}
-                  onChange={(e) =>
-                    handleApplicantChange(index, "image", e.target.value)
-                  }
-                />
-              </Box>
-            </CardBody>
-          </Card>
-        ))}
-        <Box mb={4} mt={4}>
-          <Button type="button" onClick={handleAddApplicant}>
-            Add applicant
-          </Button>
-        </Box>
-        <Box mb={4} mt={4}>
-          <Button type="submit">Submit</Button>
-        </Box>
-      </form>
+            <Box mb={4} mt={4}>
+              <Button type="submit">Submit</Button>
+            </Box>
+          </form>
+        </Stack>
+      ) : (
+        <Spinner
+          margin={10}
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      )}
     </Stack>
   );
 };
