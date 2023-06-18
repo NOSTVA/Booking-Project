@@ -112,7 +112,7 @@ const MainFrom = () => {
       isClosable: false,
       position: "top",
       render: () => (
-        <Stack bg="#f7fafc" p={4} borderRadius="3">
+        <Stack bg="gray.300" p={4} borderRadius="3">
           <Text color="black" mb={2}>
             Are you sure you want to delete this applicant?
           </Text>
@@ -128,7 +128,7 @@ const MainFrom = () => {
             >
               Yes
             </Button>
-            <Button size="sm" onClick={() => toast.closeAll()}>
+            <Button size="sm" bg="black" _hover="black" onClick={() => toast.closeAll()}>
               No
             </Button>
           </HStack>
