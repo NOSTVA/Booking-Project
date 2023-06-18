@@ -8,11 +8,11 @@ const { isAuthenticated, isNotAuthenticated } = require("../controllers/auth");
 
 // authentication pages
 router.get("/register", isNotAuthenticated, function (req, res) {
-  res.status(401).sendFile(path.join(__dirname, "../public/register.html"));
+  next();
 });
 
 router.get("/login", isNotAuthenticated, function (req, res) {
-  res.status(401).sendFile(path.join(__dirname, "../public/login.html"));
+  next();
 });
 
 // authentication api
