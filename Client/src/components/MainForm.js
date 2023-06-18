@@ -13,8 +13,10 @@ import {
   InputLeftAddon,
   Heading,
 } from "@chakra-ui/react";
+import { useCreateAppointmentMutation } from "../store/api-slice";
 
 const MainFrom = () => {
+  const [createAppointment] = useCreateAppointmentMutation();
   const [input, setInput] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -36,22 +38,13 @@ const MainFrom = () => {
     e.preventDefault();
     setIsSubmitted(true);
 
-    // console.log("Expected travel date:", e.target.elements.date.value);
-    // console.log("Email:", input);
-    // console.log("Phone number:", phoneNumber);
-    // applicants.forEach((applicant, index) => {
-    //   console.log(`Applicant ${index + 1} first name:`, applicant.firstName);
-    //   console.log(`Applicant ${index + 1} last name:`, applicant.lastName);
-    //   console.log(
-    //     `Applicant ${index + 1} passport number:`,
-    //     applicant.passportNumber
-    //   );
-    //   console.log(
-    //     `Applicant ${index + 1} date of birth:`,
-    //     applicant.dateOfBirth
-    //   );
-    //   console.log(`Applicant ${index + 1} image:`, applicant.image);
-    // });
+    const formData = {
+      expectedTravelDate: e.target.elements.date.value,
+      email: input,
+      phone: "+20" + phoneNumber,
+      applicants: applicants,
+    };
+    createAppointment(formData);
   };
 
   const handlePhoneKeyDown = (e) => {
@@ -178,6 +171,7 @@ const MainFrom = () => {
                   size="md"
                   type="tel"
                   value={applicant.passportNumber}
+                  onKeyDown={handlePhoneKeyDown}
                   onChange={(e) =>
                     handleApplicantChange(
                       index,
@@ -204,9 +198,8 @@ const MainFrom = () => {
                 <Input
                   placeholder="Image"
                   size="md"
-                  type="file"
-                  p={1}
-                  cursor={"pointer"}
+                  type="text"
+                  // p={1}
                   value={applicant.image}
                   onChange={(e) =>
                     handleApplicantChange(index, "image", e.target.value)
