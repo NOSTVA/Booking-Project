@@ -1,5 +1,5 @@
-import { Container } from "@chakra-ui/react";
 import MainForm from "../components/MainForm";
+import { Container } from "@chakra-ui/react";
 
 const CreateAppointment = () => {
   return (

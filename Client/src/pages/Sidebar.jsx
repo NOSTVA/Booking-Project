@@ -32,7 +32,8 @@ function Sidebar({ isOpen, onClose }) {
         borderBottomWidth="1px"
         borderBottomColor={useColorModeValue("gray.300", "gray.600")}
       >
-        <Text fontWeight="bold">My App</Text>
+        <Link to="/"><Text>My App</Text></Link>
+
         <IconButton
           icon={<Icon as={MdMenu} />}
           variant="ghost"

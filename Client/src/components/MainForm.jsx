@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   Box,
   Stack,
@@ -12,8 +13,13 @@ import {
   InputGroup,
   InputLeftAddon,
   Heading,
+  IconButton,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
 import { useCreateAppointmentMutation } from "../store/api-slice";
+import { AiOutlineClose } from "react-icons/ai";
+import { useToast } from "@chakra-ui/react";
 
 const MainFrom = () => {
   const [createAppointment] = useCreateAppointmentMutation();
@@ -29,6 +35,8 @@ const MainFrom = () => {
       image: "",
     },
   ]);
+
+  const toast = useToast();
 
   const handleInputChange = (e) => setInput(e.target.value);
 
@@ -85,6 +93,42 @@ const MainFrom = () => {
     setApplicants(newApplicants);
   };
 
+  const handleDeleteApplicant = (index) => {
+    toast({
+      title: "Applicant deleted",
+      status: "warning",
+      duration: null,
+      isClosable: false,
+      position: "top",
+      render: () => (
+        <Stack>
+          <Text mb={2}>Are you sure you want to delete this applicant?</Text>
+          <HStack spacing={4}>
+            <Button
+              colorScheme="red"
+              fontWeight="bold"
+              size="sm"
+              onClick={() => {
+                handleConfirmDelete(index);
+                toast.closeAll();
+              }}
+            >
+              Yes
+            </Button>
+            <Button size="sm" onClick={() => toast.closeAll()}>
+              No
+            </Button>
+          </HStack>
+        </Stack>
+      ),
+    });
+  };
+
+  const handleConfirmDelete = (index) => {
+    const newApplicants = [...applicants];
+    newApplicants.splice(index, 1);
+    setApplicants(newApplicants);
+  };
   return (
     <Stack spacing={5}>
       <Heading>Appointment</Heading>
@@ -126,7 +170,7 @@ const MainFrom = () => {
                     maxLength="11"
                     value={phoneNumber}
                     onKeyDown={handlePhoneKeyDown}
-                    onChange={handlePhoneChange}
+                    onChange={(e) => handlePhoneChange(e)}
                   />
                 </InputGroup>
                 {isError && (
@@ -140,6 +184,12 @@ const MainFrom = () => {
         {applicants.map((applicant, index) => (
           <Card key={index} variant="outline" mt={4} mb={4}>
             <CardBody>
+              <Box position="absolute" top={1} right={2}>
+                <IconButton
+                  icon={<AiOutlineClose />}
+                  onClick={() => handleDeleteApplicant(index)}
+                />
+              </Box>
               <Box mb={4}>
                 <FormLabel>First name</FormLabel>
                 <Input

@@ -8,7 +8,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MdMenu } from "react-icons/md";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import CreateAppointment from "./pages/CreateAppointment";
 import User from "./pages/User";
@@ -28,7 +28,8 @@ function App() {
             px={{ base: "4", md: "8" }}
             py="3"
             borderBottomWidth="1px"
-            borderBottomColor={useColorModeValue("gray.300", "gray.600")}>
+            borderBottomColor={useColorModeValue("gray.300", "gray.600")}
+          >
             <Text fontWeight="bold">My App</Text>
             <IconButton
               icon={<Icon as={MdMenu} />}
