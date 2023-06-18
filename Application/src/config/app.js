@@ -52,6 +52,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     error: {
       status: "Internal server error",
+      msg: err.message
     },
   });
 });
