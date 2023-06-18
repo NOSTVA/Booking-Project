@@ -6,22 +6,19 @@ export const apiSlice = createApi({
     baseUrl: "http://localhost:3000/api/v1",
     credentials: "include",
   }),
-  tagTypes: ["Appointment", "Applicants"],
+  tagTypes: ["Appointment"],
   endpoints: (builder) => ({
     getUserData: builder.query({
       query: () => `/u`,
     }),
-
     getAppointment: builder.query({
       query: (id) => `/appointments/${id}`,
     }),
-
     getAppointments: builder.query({
       query: ({ owner, status, visa }) =>
         `/appointments?owner=${owner}&status=${status}&visa=${visa}`,
       providesTags: ["Appointment"],
     }),
-
     deleteAppointment: builder.mutation({
       query: (id) => ({
         url: `/appointments/${id}`,
@@ -29,7 +26,6 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Appointment"],
     }),
-
     updateAppointment: builder.mutation({
       query: ({ id, data }) => ({
         url: `/appointments/${id}`,
@@ -38,7 +34,6 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Appointment"],
     }),
-
     updateApplicant: builder.mutation({
       query: ({ id, data }) => ({
         url: `/applicants/${id}`,
@@ -47,7 +42,6 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Appointment"],
     }),
-
     deleteApplicant: builder.mutation({
       query: (id) => ({
         url: `/applicants/${id}`,
@@ -55,7 +49,6 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Appointment"],
     }),
-
     createAppointment: builder.mutation({
       query: (data) => ({
         url: `/appointments/`,

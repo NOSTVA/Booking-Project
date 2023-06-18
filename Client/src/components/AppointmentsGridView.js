@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 
-import {
-  Stack,
-  Spinner,
-  Card,
-  CardBody,
-  FormControl,
-  Input,
-  Select,
-} from "@chakra-ui/react";
+import { Stack, Spinner, Card, CardBody } from "@chakra-ui/react";
 
 import { useGetAppointmentsQuery } from "../store/api-slice";
 import AppointmentView from "./AppointmentView";
