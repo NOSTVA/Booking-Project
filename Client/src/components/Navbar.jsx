@@ -48,6 +48,11 @@ export default function Navbar() {
             <DesktopNav />
           </Flex>
         </Flex>
+        <Box>
+          <Button href="/logout" as="a">
+            Log out
+          </Button>
+        </Box>
         <Flex ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
           <IconButton
             onClick={onToggle}
@@ -178,9 +183,5 @@ const NAV_ITEMS = [
     label: "Dashboard",
     href: "/dashboard",
     adminOnly: true,
-  },
-  {
-    label: "Logout",
-    href: "/logout",
   },
 ];
