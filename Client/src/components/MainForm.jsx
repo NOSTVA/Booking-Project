@@ -24,6 +24,7 @@ import { useToast } from "@chakra-ui/react";
 
 const MainFrom = () => {
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation();
+
   const [input, setInput] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -43,7 +44,7 @@ const MainFrom = () => {
 
   const isError = isSubmitted && (input === "" || phoneNumber === "");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
 
@@ -65,7 +66,9 @@ const MainFrom = () => {
       phone: "+20" + phoneNumber,
       applicants: applicants,
     };
-    createAppointment(formData);
+
+    const result = await createAppointment(formData);
+    console.log("data", result);
   };
 
   const handlePhoneKeyDown = (e) => {
@@ -139,8 +142,7 @@ const MainFrom = () => {
                 onClick={() => {
                   handleConfirmDelete(index);
                   toast.closeAll();
-                }}
-              >
+                }}>
                 Yes
               </Button>
               <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
@@ -293,6 +295,8 @@ const MainFrom = () => {
                     <Input
                       placeholder="Image"
                       size="md"
+                      type="text"
+                      p={1}
                       type="text"
                       // p={1}
                       value={applicant.image}
