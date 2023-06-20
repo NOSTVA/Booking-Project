@@ -142,7 +142,8 @@ const MainFrom = () => {
                 onClick={() => {
                   handleConfirmDelete(index);
                   toast.closeAll();
-                }}>
+                }}
+              >
                 Yes
               </Button>
               <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
@@ -297,8 +298,6 @@ const MainFrom = () => {
                       size="md"
                       type="text"
                       p={1}
-                      type="text"
-                      // p={1}
                       value={applicant.image}
                       onChange={(e) =>
                         handleApplicantChange(index, "image", e.target.value)
