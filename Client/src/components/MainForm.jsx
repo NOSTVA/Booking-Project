@@ -293,8 +293,8 @@ const MainFrom = () => {
                     <Input
                       placeholder="Image"
                       size="md"
-                      type="file"
-                      p={1}
+                      type="text"
+                      // p={1}
                       value={applicant.image}
                       onChange={(e) =>
                         handleApplicantChange(index, "image", e.target.value)
