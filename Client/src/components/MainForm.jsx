@@ -88,7 +88,6 @@ const MainFrom = () => {
     };
 
     const result = await createAppointment(formData);
-    console.log(result);
     result.error.data.errors.map((err) => {
       if (err.field === "expectedTravelDate") {
         setExpicDate(err.message);
