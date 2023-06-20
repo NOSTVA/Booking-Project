@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import {
   Box,
   Stack,
@@ -24,17 +23,21 @@ import { useToast } from "@chakra-ui/react";
 
 const MainFrom = () => {
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation();
-
+  const [errMsg, setErrMsg] = useState("");
+  const [fnameErr, setFnameErr] = useState("");
+  const [expicDate, setExpicDate] = useState("");
+  const [emailMsg, setEmailMsg] = useState("");
+  const [phoneMsg, setPhoneMsg] = useState("");
   const [input, setInput] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [applicants, setApplicants] = useState([
     {
-      firstName: "",
-      lastName: "",
-      passportNumber: "",
-      dateOfBirth: "",
-      image: "",
+      firstName: { value: "", err: "" },
+      lastName: { value: "", err: "" },
+      passportNumber: { value: "", err: "" },
+      dateOfBirth: { value: "", err: "" },
+      image: { value: "", err: "" },
     },
   ]);
 
@@ -44,11 +47,28 @@ const MainFrom = () => {
 
   const isError = isSubmitted && (input === "" || phoneNumber === "");
 
+  function getApplicantsData(applicants) {
+    return applicants.map((applicant) => {
+      return Object.fromEntries(
+        Object.entries(applicant).map(([field, { value }]) => [field, value])
+      );
+    });
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
 
-    if (input === "" || phoneNumber === "") {
+    // Check if all required fields are filled
+    const isFieldsEmpty = applicants.some(
+      (applicant) =>
+        !applicant.firstName.value ||
+        !applicant.lastName.value ||
+        !applicant.passportNumber.value ||
+        !applicant.dateOfBirth.value ||
+        !applicant.image.value
+    );
+
+    if (input === "" || phoneNumber === "" || isFieldsEmpty) {
       toast({
         title: "Please fill in all required fields",
         status: "warning",
@@ -64,11 +84,32 @@ const MainFrom = () => {
       expectedTravelDate: e.target.elements.date.value,
       email: input,
       phone: "+20" + phoneNumber,
-      applicants: applicants,
+      applicants: getApplicantsData(applicants),
     };
 
     const result = await createAppointment(formData);
-    console.log("data", result);
+    console.log(result);
+    result.error.data.errors.map((err) => {
+      if (err.field === "expectedTravelDate") {
+        setExpicDate(err.message);
+      }
+      if (err.field === "email") {
+        setEmailMsg(err.message);
+      }
+      if (err.field === "phone") {
+        setPhoneMsg(err.message);
+      }
+      applicants.map((app, index) => {
+        if (app[err.field].value === err.value || app[err.field].value === "") {
+          setApplicants((prev) => {
+            const newArr = [...prev];
+            newArr[index][err.field].err = err.message;
+            return newArr;
+          });
+        }
+      });
+      console.log(applicants);
+    });
   };
 
   const handlePhoneKeyDown = (e) => {
@@ -95,11 +136,11 @@ const MainFrom = () => {
       setApplicants([
         ...applicants,
         {
-          firstName: "",
-          lastName: "",
-          passportNumber: "",
-          dateOfBirth: "",
-          image: "",
+          firstName: { value: "", err: "" },
+          lastName: { value: "", err: "" },
+          passportNumber: { value: "", err: "" },
+          dateOfBirth: { value: "", err: "" },
+          image: { value: "", err: "" },
         },
       ]);
     } else {
@@ -117,7 +158,7 @@ const MainFrom = () => {
 
   const handleApplicantChange = (index, field, value) => {
     const newApplicants = [...applicants];
-    newApplicants[index][field] = value;
+    newApplicants[index][field].value = value;
     setApplicants(newApplicants);
   };
 
@@ -159,6 +200,7 @@ const MainFrom = () => {
   const handleConfirmDelete = (index) => {
     const newApplicants = [...applicants];
     newApplicants.splice(index, 1);
+    console.log(newApplicants);
     setApplicants(newApplicants);
   };
   return (
@@ -170,13 +212,16 @@ const MainFrom = () => {
             <Card variant="outline">
               <CardBody>
                 <Box mb={4}>
-                  <FormLabel>Expected travel date</FormLabel>
-                  <Input
-                    name="date"
-                    placeholder="Select Date and Time"
-                    size="md"
-                    type="date"
-                  />
+                  <FormControl isInvalid={isError}>
+                    <FormLabel>Expected travel date</FormLabel>
+                    <Input
+                      name="date"
+                      placeholder="Select Date and Time"
+                      size="md"
+                      type="date"
+                    />
+                    <FormErrorMessage>{expicDate}</FormErrorMessage>
+                  </FormControl>
                 </Box>
                 <Box mb={4}>
                   <FormControl isInvalid={isError}>
@@ -187,9 +232,7 @@ const MainFrom = () => {
                       value={input}
                       onChange={handleInputChange}
                     />
-                    {isError && (
-                      <FormErrorMessage>Email is required.</FormErrorMessage>
-                    )}
+                    <FormErrorMessage>{emailMsg}</FormErrorMessage>
                   </FormControl>
                 </Box>
                 <Box>
@@ -207,11 +250,7 @@ const MainFrom = () => {
                         onChange={(e) => handlePhoneChange(e)}
                       />
                     </InputGroup>
-                    {isError && (
-                      <FormErrorMessage>
-                        phone number is required.
-                      </FormErrorMessage>
-                    )}
+                    <FormErrorMessage>{phoneMsg}</FormErrorMessage>
                   </FormControl>
                 </Box>
               </CardBody>
@@ -231,20 +270,23 @@ const MainFrom = () => {
                     )}
                   </Box>
                   <Box mb={4}>
-                    <FormLabel>First name</FormLabel>
-                    <Input
-                      placeholder="First name"
-                      size="md"
-                      type="text"
-                      value={applicant.firstName}
-                      onChange={(e) =>
-                        handleApplicantChange(
-                          index,
-                          "firstName",
-                          e.target.value
-                        )
-                      }
-                    />
+                    <FormControl isInvalid={isError}>
+                      <FormLabel>First name</FormLabel>
+                      <Input
+                        placeholder="First name"
+                        size="md"
+                        type="text"
+                        value={applicant.firstName.value}
+                        onChange={(e) =>
+                          handleApplicantChange(
+                            index,
+                            "firstName",
+                            e.target.value
+                          )
+                        }
+                      />
+                      <FormErrorMessage>{fnameErr}</FormErrorMessage>
+                    </FormControl>
                   </Box>
                   <Box mb={4}>
                     <FormLabel>Last name</FormLabel>
@@ -252,11 +294,12 @@ const MainFrom = () => {
                       placeholder="Last name"
                       size="md"
                       type="text"
-                      value={applicant.lastName}
+                      value={applicant.lastName.value}
                       onChange={(e) =>
                         handleApplicantChange(index, "lastName", e.target.value)
                       }
                     />
+                    <FormErrorMessage>{errMsg}</FormErrorMessage>
                   </Box>
                   <Box mb={4}>
                     <FormLabel>Passport number</FormLabel>
@@ -264,7 +307,7 @@ const MainFrom = () => {
                       placeholder="Passport number"
                       size="md"
                       type="tel"
-                      value={applicant.passportNumber}
+                      value={applicant.passportNumber.value}
                       onKeyDown={handlePhoneKeyDown}
                       onChange={(e) =>
                         handleApplicantChange(
@@ -274,6 +317,7 @@ const MainFrom = () => {
                         )
                       }
                     />
+                    <FormErrorMessage>{errMsg}</FormErrorMessage>
                   </Box>
                   <Box mb={4}>
                     <FormLabel>Date of birth</FormLabel>
@@ -281,7 +325,7 @@ const MainFrom = () => {
                       placeholder="Passport number"
                       size="md"
                       type="date"
-                      value={applicant.dateOfBirth}
+                      value={applicant.dateOfBirth.value}
                       onChange={(e) =>
                         handleApplicantChange(
                           index,
@@ -290,6 +334,7 @@ const MainFrom = () => {
                         )
                       }
                     />
+                    <FormErrorMessage>{errMsg}</FormErrorMessage>
                   </Box>
                   <Box mb={4}>
                     <FormLabel>Image</FormLabel>
@@ -298,11 +343,12 @@ const MainFrom = () => {
                       size="md"
                       type="text"
                       p={1}
-                      value={applicant.image}
+                      value={applicant.image.value || ""}
                       onChange={(e) =>
                         handleApplicantChange(index, "image", e.target.value)
                       }
                     />
+                    <FormErrorMessage>{errMsg}</FormErrorMessage>
                   </Box>
                 </CardBody>
               </Card>

@@ -75,8 +75,8 @@ function AppointmentView({ appointment, attributes }) {
     deleteApplicant(_id);
   }
 
-  function handleEditClick(_id) {
-    updateApplicant({
+  async function handleEditClick(_id) {
+    const result = await updateApplicant({
       id: _id,
       data: editedValues[_id],
     });
@@ -85,6 +85,7 @@ function AppointmentView({ appointment, attributes }) {
       delete newState[_id];
       return newState;
     });
+    console.log("result", result);
   }
 
   function handleCancelClick(_id) {
@@ -150,7 +151,8 @@ function AppointmentView({ appointment, attributes }) {
                     size="sm"
                     layout={layout}
                     width="full"
-                    variant="simple">
+                    variant="simple"
+                  >
                     <Tbody>
                       <Tr>
                         <Td>
@@ -174,7 +176,8 @@ function AppointmentView({ appointment, attributes }) {
                                 appointmentId,
                                 "expectedTravelDate"
                               )
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -204,7 +207,8 @@ function AppointmentView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { status: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {statusEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -227,7 +231,8 @@ function AppointmentView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "email")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -256,7 +261,8 @@ function AppointmentView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { visa: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {visaEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -279,7 +285,8 @@ function AppointmentView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "phone")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -307,7 +314,8 @@ function AppointmentView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { owner: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {ownerEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -332,7 +340,8 @@ function AppointmentView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "note")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview width="full" />
                             </Tooltip>
@@ -439,7 +448,8 @@ function AppointmentView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "firstName")}>
+                            onEdit={() => handleEdit(_id, "firstName")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -458,7 +468,8 @@ function AppointmentView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "lastName")}>
+                            onEdit={() => handleEdit(_id, "lastName")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -480,7 +491,8 @@ function AppointmentView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "passportNumber")}>
+                            onEdit={() => handleEdit(_id, "passportNumber")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -506,7 +518,8 @@ function AppointmentView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "dateOfBirth")}>
+                            onEdit={() => handleEdit(_id, "dateOfBirth")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -523,7 +536,8 @@ function AppointmentView({ appointment, attributes }) {
                           <Stack
                             direction="row"
                             align="center"
-                            justify="center">
+                            justify="center"
+                          >
                             <IconButton
                               aria-label="Delete"
                               size="sm"
@@ -553,7 +567,8 @@ function AppointmentView({ appointment, attributes }) {
       <Modal
         isCentered={true}
         isOpen={isAvatarModalOpen}
-        onClose={() => onApplicantAvatarClose()}>
+        onClose={() => onApplicantAvatarClose()}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
