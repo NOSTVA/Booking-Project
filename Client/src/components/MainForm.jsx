@@ -88,7 +88,7 @@ const MainFrom = () => {
     };
 
     const result = await createAppointment(formData);
-    result.error.data.errors.map((err) => {
+    result?.error.data.errors.map((err) => {
       if (err.field === "expectedTravelDate") {
         setExpicDate(err.message);
       }
@@ -182,8 +182,7 @@ const MainFrom = () => {
                 onClick={() => {
                   handleConfirmDelete(index);
                   toast.closeAll();
-                }}
-              >
+                }}>
                 Yes
               </Button>
               <Button size="sm" bg="black" onClick={() => toast.closeAll()}>

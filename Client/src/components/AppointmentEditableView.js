@@ -144,7 +144,7 @@ function AppointmentEditableView({ appointment, attributes }) {
       <Card variant="outline" size="sm">
         <CardBody>
           <Stack direction="row">
-            <Card mb={5} size="sm">
+            <Card mb={5} size="sm" width="full">
               <CardBody>
                 <TableContainer>
                   <Table
