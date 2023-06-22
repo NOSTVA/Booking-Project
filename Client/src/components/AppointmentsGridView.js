@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Stack, Spinner, Card, CardBody, Box } from "@chakra-ui/react";
 
 import { useGetAppointmentsQuery } from "../store/api-slice";
-import AppointmentView from "./AppointmentView";
+import AppointmentEditableView from "./AppointmentEditableView";
 import Search from "./Search";
 import Filter from "./Filter";
 
@@ -46,7 +46,7 @@ function AppointmentsGridView() {
                 )
             )
             .map((appointment) => (
-              <AppointmentView
+              <AppointmentEditableView
                 key={appointment._id}
                 appointment={appointment}
                 attributes={data.attributes}
