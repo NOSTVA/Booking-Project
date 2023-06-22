@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Stack, Spinner } from "@chakra-ui/react";
 import { useGetAppointmentsQuery } from "../store/api-slice";

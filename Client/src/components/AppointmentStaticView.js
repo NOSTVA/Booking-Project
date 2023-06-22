@@ -12,7 +12,6 @@ import {
   Card,
   CardBody,
   Avatar,
-  useBreakpointValue,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -22,7 +21,6 @@ import {
 
 function AppointmentStaticView({ appointment, attributes }) {
   const {
-    _id: appointmentId,
     applicants,
     numberOfApplicants,
     expectedTravelDate,
