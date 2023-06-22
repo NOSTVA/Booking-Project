@@ -48,21 +48,15 @@ function AppointmentStaticView({ appointment, attributes }) {
     SetIsAvatarModalOpen(false);
   }
 
-  const layout = useBreakpointValue({ base: "default", md: "fixed" });
-
   return (
     <>
       <Card variant="outline" size="sm">
         <CardBody>
           <Stack direction="row">
-            <Card mb={5} size="sm">
+            <Card mb={5} size="sm" width="full">
               <CardBody>
                 <TableContainer>
-                  <Table
-                    size="sm"
-                    layout={layout}
-                    width="full"
-                    variant="simple">
+                  <Table size="sm" width="full" variant="simple">
                     <Tbody>
                       <Tr>
                         <Td>
