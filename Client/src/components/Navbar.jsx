@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Flex,
@@ -6,19 +6,22 @@ import {
   IconButton,
   Button,
   Stack,
+  HStack,
   Collapse,
   Popover,
   PopoverTrigger,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
-  Link,
 } from "@chakra-ui/react";
+
+import { Link } from "react-router-dom";
 
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
+import UserContext from "../context/userContext";
+
 export default function Navbar() {
-  const [isAdmin, setIsAdmin] = useState(false);
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -46,20 +49,27 @@ export default function Navbar() {
             <DesktopNav />
           </Flex>
         </Flex>
-        <Box>
-          <Button href="/logout" as="a">
-            Log out
-          </Button>
-        </Box>
-        <Flex ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
-          <IconButton
-            onClick={onToggle}
-            icon={
-              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
-            }
-            variant={"ghost"}
-            aria-label={"Toggle Navigation"}
-          />
+        <Flex ml={{ base: -2 }}>
+          <HStack>
+            <Button to="/logout" as={Link} size="sm">
+              Log out
+            </Button>
+            <Flex display={{ base: "flex", md: "none" }}>
+              <IconButton
+                size="sm"
+                onClick={onToggle}
+                icon={
+                  isOpen ? (
+                    <CloseIcon w={3} h={3} />
+                  ) : (
+                    <HamburgerIcon w={5} h={5} />
+                  )
+                }
+                variant={"ghost"}
+                aria-label={"Toggle Navigation"}
+              />
+            </Flex>
+          </HStack>
         </Flex>
       </Flex>
 
@@ -74,13 +84,14 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
 
+  const { user, isLoading } = useContext(UserContext);
+
   return (
     <Stack direction={"row"} spacing={4}>
       {NAV_ITEMS.map((navItem) => {
-        // if (navItem.adminOnly && !isAdmin) {
-        //     // skip rendering this nav item if it's for admin only and the user is not an admin
-        //     return null;
-        //   }
+        if (navItem.adminOnly && user.role !== "admin") {
+          return null;
+        }
 
         return (
           <Box key={navItem.label}>
@@ -88,7 +99,7 @@ const DesktopNav = () => {
               <PopoverTrigger>
                 <Link
                   p={2}
-                  href={navItem.href ?? "#"}
+                  to={navItem.href ?? "#"}
                   fontSize={"sm"}
                   fontWeight={500}
                   color={linkColor}
@@ -103,19 +114,47 @@ const DesktopNav = () => {
           </Box>
         );
       })}
+
+      {!isLoading && user.role === "admin" && (
+        <Box>
+          <Popover trigger={"hover"} placement={"bottom-start"}>
+            <PopoverTrigger>
+              <Link
+                p={2}
+                fontSize={"sm"}
+                fontWeight={500}
+                color={linkColor}
+                _hover={{
+                  textDecoration: "none",
+                  color: linkHoverColor,
+                }}
+                to="/admin">
+                Admin Dashboard
+              </Link>
+            </PopoverTrigger>
+          </Popover>
+        </Box>
+      )}
     </Stack>
   );
 };
 
 const MobileNav = () => {
+  const { user, isLoading } = useContext(UserContext);
+  const bgColor = useColorModeValue("white", "gray.800");
+
+  if (isLoading) {
+    return null;
+  }
+
   return (
-    <Stack
-      bg={useColorModeValue("white", "gray.800")}
-      p={4}
-      display={{ md: "none" }}>
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
-      ))}
+    <Stack bg={bgColor} p={4} display={{ md: "none" }}>
+      {NAV_ITEMS.map((navItem) => {
+        if (navItem.adminOnly && user.role !== "admin") {
+          return null;
+        }
+        return <MobileNavItem key={navItem.label} {...navItem} />;
+      })}
     </Stack>
   );
 };
@@ -128,7 +167,7 @@ const MobileNavItem = ({ label, children, href }) => {
       <Flex
         py={2}
         as={Link}
-        href={href ?? "#"}
+        to={href ?? "#"}
         justify={"space-between"}
         align={"center"}
         _hover={{
@@ -170,18 +209,16 @@ const NAV_ITEMS = [
   {
     label: "Home",
     href: "/",
+    adminOnly: false,
   },
   {
     label: "My Dashboard",
     href: "/myappointments",
-  },
-  {
-    label: "Admin Dashboard",
-    href: "/admin",
-    adminOnly: true,
+    adminOnly: false,
   },
   {
     label: "Create Appointment",
     href: "/create",
+    adminOnly: false,
   },
 ];
