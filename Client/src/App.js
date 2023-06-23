@@ -1,8 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
+import Admin from "./pages/Admin";
+import MyAppointments from "./pages/MyAppointments";
 
 function App() {
   const router = createBrowserRouter([
@@ -11,12 +12,16 @@ function App() {
       element: <Home />,
     },
     {
-      path: "dashboard",
-      element: <Dashboard />,
+      path: "admin",
+      element: <Admin />,
     },
     {
       path: "create",
       element: <Create />,
+    },
+    {
+      path: "myappointments",
+      element: <MyAppointments />,
     },
   ]);
 

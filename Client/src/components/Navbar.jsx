@@ -172,12 +172,16 @@ const NAV_ITEMS = [
     href: "/",
   },
   {
-    label: "Dashboard",
-    href: "/dashboard",
+    label: "My Dashboard",
+    href: "/myappointments",
+  },
+  {
+    label: "Admin Dashboard",
+    href: "/admin",
     adminOnly: true,
   },
   {
-    label: "Make Appointment",
+    label: "Create Appointment",
     href: "/create",
   },
 ];

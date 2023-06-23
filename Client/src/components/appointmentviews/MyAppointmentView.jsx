@@ -26,14 +26,14 @@ import {
   Image,
 } from "@chakra-ui/react";
 
-import { DeleteIcon, LinkIcon, AddIcon, CopyIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LinkIcon, AddIcon } from "@chakra-ui/icons";
 
 import {
   useDeleteApplicantMutation,
   useUpdateApplicantMutation,
   useUpdateAppointmentMutation,
   useDeleteAppointmentMutation,
-} from "../store/api-slice";
+} from "../../store/api-slice";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const {
@@ -364,14 +364,6 @@ function AppointmentEditableView({ appointment, attributes }) {
               </CardBody>
             </Card>
             <Stack>
-              <Tooltip label="Copy Code" placement="right">
-                <IconButton
-                  aria-label="Copy Code"
-                  size="sm"
-                  icon={<CopyIcon />}
-                  variant="outline"
-                />
-              </Tooltip>
               <Tooltip label="Add applicant" placement="right">
                 <IconButton
                   aria-label="Add Applicant"

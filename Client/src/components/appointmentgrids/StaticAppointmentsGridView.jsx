@@ -1,10 +1,10 @@
 import React from "react";
 
 import { Stack, Spinner } from "@chakra-ui/react";
-import { useGetAppointmentsQuery } from "../store/api-slice";
-import AppointmentStaticView from "../components/AppointmentStaticView";
+import { useGetAppointmentsQuery } from "../../store/api-slice";
+import StaticAppointmentView from "../appointmentviews/StaticAppointmentView";
 
-function Public() {
+function StaticAppointmentsGridView() {
   const { data, isSuccess, isLoading } = useGetAppointmentsQuery({
     owner: "",
     status: "",
@@ -16,7 +16,7 @@ function Public() {
       {!isLoading ? (
         isSuccess &&
         data.payload.map((appointment) => (
-          <AppointmentStaticView
+          <StaticAppointmentView
             key={appointment._id}
             appointment={appointment}
             attributes={data.attributes}
@@ -38,4 +38,4 @@ function Public() {
   );
 }
 
-export default Public;
+export default StaticAppointmentsGridView;

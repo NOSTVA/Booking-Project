@@ -71,6 +71,11 @@ export const apiSlice = createApi({
         body: data,
       }),
     }),
+    getMyAppointments: builder.query({
+      query: ({ owner, status, visa }) =>
+        `/u/appointments?owner=${owner}&status=${status}&visa=${visa}`,
+      providesTags: ["Appointment"],
+    }),
   }),
 });
 
@@ -85,4 +90,5 @@ export const {
   useGetUserDataQuery,
   useLoginMutation,
   useRegisterMutation,
+  useGetMyAppointmentsQuery,
 } = apiSlice;

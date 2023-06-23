@@ -2,20 +2,18 @@ import React, { useState } from "react";
 
 import { Stack, Spinner, Card, CardBody } from "@chakra-ui/react";
 
-import { useGetAppointmentsQuery } from "../store/api-slice";
-import AppointmentEditableView from "./AppointmentEditableView";
-import Search from "./Search";
-import Filter from "./Filter";
+import EditableAppointmentView from "../appointmentviews/EditableAppointmentView";
+import Search from "../Search";
+import Filter from "../Filter";
 
-function AppointmentsGridView() {
+function AppointmentsGridView({
+  filterField,
+  setFilterFields,
+  data,
+  isSuccess,
+  isLoading,
+}) {
   const [term, setTerm] = useState("");
-  const [filterField, setFilterFields] = useState({
-    owner: "",
-    visa: "",
-    status: "",
-  });
-
-  const { data, isSuccess, isLoading } = useGetAppointmentsQuery(filterField);
 
   return (
     <Stack spacing={5}>
@@ -46,7 +44,7 @@ function AppointmentsGridView() {
                 )
             )
             .map((appointment) => (
-              <AppointmentEditableView
+              <EditableAppointmentView
                 key={appointment._id}
                 appointment={appointment}
                 attributes={data.attributes}
