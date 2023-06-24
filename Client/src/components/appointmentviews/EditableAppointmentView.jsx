@@ -30,6 +30,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  Box,
 } from "@chakra-ui/react";
 
 import {
@@ -47,10 +48,12 @@ import {
   useUpdateAppointmentMutation,
   useDeleteAppointmentMutation,
   useGetAssignedUsersQuery,
+  useGetAllUsersQuery,
 } from "../../store/api-slice";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const {
     _id: appointmentId,
     applicants,
@@ -70,13 +73,51 @@ function AppointmentEditableView({ appointment, attributes }) {
   const [isAvatarModalOpen, SetIsAvatarModalOpen] = useState(false);
   const [editedValues, setEditedValues] = useState({});
 
+  const [currentAppointmentModal, setCurrentAppointmentModal] = useState("");
+
   const [deleteApplicant] = useDeleteApplicantMutation();
   const [updateApplicant] = useUpdateApplicantMutation();
   const [updateAppointment] = useUpdateAppointmentMutation();
   const [deleteAppointment] = useDeleteAppointmentMutation();
-  const { data, isLoading } = useGetAssignedUsersQuery();
+  const { data: assignedUsers, isLoading: isAssignedUsersLoading } =
+    useGetAssignedUsersQuery();
+  const { data: users, isLoading: isUsersLoading } = useGetAllUsersQuery();
 
   // controllers
+
+  function handleOnModalOpen(appointmentId) {
+    setCurrentAppointmentModal(appointmentId);
+  }
+  function handleOnModalClose() {
+    setCurrentAppointmentModal("");
+  }
+
+  function handleUserChange(e, _id) {
+    const appointmentId = currentAppointmentModal;
+    const userId = _id;
+
+    const isAssigned = isUserAssigned(userId, appointmentId);
+
+    if (isAssigned) {
+      e.target.checked = false;
+      console.log("delete this user");
+    } else {
+      e.target.checked = true;
+      console.log("assign this user");
+    }
+  }
+
+  function isUserAssigned(userId, appointmentId) {
+    const isAssigned = assignedUsers.some((assigneduser) => {
+      return (
+        userId == assigneduser.user && appointmentId == assigneduser.appointment
+      );
+    });
+    console.log(isAssigned);
+
+    return isAssigned;
+  }
+
   function onApplicantAvatarOpen(image) {
     setSelectedImage(image);
     SetIsAvatarModalOpen(true);
@@ -167,8 +208,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                     size="sm"
                     layout={layout}
                     width="full"
-                    variant="simple"
-                  >
+                    variant="simple">
                     <Tbody>
                       <Tr>
                         <Td>
@@ -192,8 +232,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 appointmentId,
                                 "expectedTravelDate"
                               )
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -223,8 +262,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { status: e.target.value },
                               });
-                            }}
-                          >
+                            }}>
                             {statusEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -247,8 +285,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "email")
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -277,8 +314,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { visa: e.target.value },
                               });
-                            }}
-                          >
+                            }}>
                             {visaEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -301,8 +337,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "phone")
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -330,8 +365,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { owner: e.target.value },
                               });
-                            }}
-                          >
+                            }}>
                             {ownerEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -356,8 +390,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "note")
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview width="full" />
                             </Tooltip>
@@ -424,24 +457,13 @@ function AppointmentEditableView({ appointment, attributes }) {
                 <IconButton
                   aria-label="Assign"
                   size="sm"
-                  icon={<DragHandleIcon onClick={onOpen} />}
+                  icon={<DragHandleIcon />}
+                  onClick={() => {
+                    handleOnModalOpen(appointmentId);
+                    onOpen();
+                  }}
                   variant="outline"
                 />
-                <Modal isOpen={isOpen} onClose={onClose}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody></ModalBody>
-
-                    <ModalFooter>
-                      <Button colorScheme="blue" mr={3} onClick={onClose}>
-                        Close
-                      </Button>
-                      <Button variant="ghost">Secondary Action</Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
               </Tooltip>
             </Stack>
           </Stack>
@@ -485,8 +507,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "firstName")}
-                          >
+                            onEdit={() => handleEdit(_id, "firstName")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -505,8 +526,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "lastName")}
-                          >
+                            onEdit={() => handleEdit(_id, "lastName")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -528,8 +548,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "passportNumber")}
-                          >
+                            onEdit={() => handleEdit(_id, "passportNumber")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -555,8 +574,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "dateOfBirth")}
-                          >
+                            onEdit={() => handleEdit(_id, "dateOfBirth")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -573,8 +591,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                           <Stack
                             direction="row"
                             align="center"
-                            justify="center"
-                          >
+                            justify="center">
                             <IconButton
                               aria-label="Delete"
                               size="sm"
@@ -601,11 +618,55 @@ function AppointmentEditableView({ appointment, attributes }) {
           </TableContainer>
         </CardBody>
       </Card>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          handleOnModalClose();
+          onClose();
+        }}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Users</ModalHeader>
+          {/* ============================================================================= */}
+          <ModalCloseButton />
+          <ModalBody>
+            <Stack>
+              {!isUsersLoading &&
+                !isAssignedUsersLoading &&
+                users.map(({ email, _id }) => (
+                  <Checkbox
+                    key={_id}
+                    value={
+                      currentAppointmentModal &&
+                      isUserAssigned(_id, currentAppointmentModal)
+                    }
+                    onChange={(e) => handleUserChange(e, _id)}>
+                    {email}
+                  </Checkbox>
+                ))}
+            </Stack>
+          </ModalBody>
+          {/* ============================================================================= */}
+
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                handleOnModalClose();
+                onClose();
+              }}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <Modal
         isCentered={true}
         isOpen={isAvatarModalOpen}
-        onClose={() => onApplicantAvatarClose()}
-      >
+        onClose={() => onApplicantAvatarClose()}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />

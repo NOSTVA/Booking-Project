@@ -80,6 +80,10 @@ export const apiSlice = createApi({
       query: () => `/u/users/assign`,
       providesTags: ["Appointment"],
     }),
+    getAllUsers: builder.query({
+      query: () => `/u/users`,
+      providesTags: ["Appointment"],
+    }),
   }),
 });
 
@@ -96,4 +100,5 @@ export const {
   useRegisterMutation,
   useGetMyAppointmentsQuery,
   useGetAssignedUsersQuery,
+  useGetAllUsersQuery,
 } = apiSlice;
