@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   Table,
@@ -30,7 +30,6 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Box,
 } from "@chakra-ui/react";
 
 import {
@@ -38,7 +37,6 @@ import {
   LinkIcon,
   AddIcon,
   CopyIcon,
-  HamburgerIcon,
   DragHandleIcon,
 } from "@chakra-ui/icons";
 
@@ -47,9 +45,12 @@ import {
   useUpdateApplicantMutation,
   useUpdateAppointmentMutation,
   useDeleteAppointmentMutation,
-  useGetAssignedUsersQuery,
   useGetAllUsersQuery,
+  useDeassignUserMutation,
+  useAssignUserMutation,
 } from "../../store/api-slice";
+
+import { useNavigate } from "react-router-dom";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -73,49 +74,30 @@ function AppointmentEditableView({ appointment, attributes }) {
   const [isAvatarModalOpen, SetIsAvatarModalOpen] = useState(false);
   const [editedValues, setEditedValues] = useState({});
 
-  const [currentAppointmentModal, setCurrentAppointmentModal] = useState("");
-
   const [deleteApplicant] = useDeleteApplicantMutation();
   const [updateApplicant] = useUpdateApplicantMutation();
   const [updateAppointment] = useUpdateAppointmentMutation();
   const [deleteAppointment] = useDeleteAppointmentMutation();
-  const { data: assignedUsers, isLoading: isAssignedUsersLoading } =
-    useGetAssignedUsersQuery();
+  const [deassignUser] = useDeassignUserMutation();
+  const [assignUser] = useAssignUserMutation();
+
+  const navigate = useNavigate();
+
   const { data: users, isLoading: isUsersLoading } = useGetAllUsersQuery();
 
   // controllers
-
-  function handleOnModalOpen(appointmentId) {
-    setCurrentAppointmentModal(appointmentId);
-  }
-  function handleOnModalClose() {
-    setCurrentAppointmentModal("");
+  function isUserAssigned(id, appointment) {
+    return appointment.assignedUsers.includes(id);
   }
 
-  function handleUserChange(e, _id) {
-    const appointmentId = currentAppointmentModal;
-    const userId = _id;
-
-    const isAssigned = isUserAssigned(userId, appointmentId);
-
-    if (isAssigned) {
-      e.target.checked = false;
-      console.log("delete this user");
+  async function handleUserChange(e, { userId, appointmentId }) {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      await assignUser({ userId, appointmentId });
     } else {
-      e.target.checked = true;
-      console.log("assign this user");
+      await deassignUser({ userId, appointmentId });
     }
-  }
-
-  function isUserAssigned(userId, appointmentId) {
-    const isAssigned = assignedUsers.some((assigneduser) => {
-      return (
-        userId == assigneduser.user && appointmentId == assigneduser.appointment
-      );
-    });
-    console.log(isAssigned);
-
-    return isAssigned;
+    navigate("/admin", { replace: true });
   }
 
   function onApplicantAvatarOpen(image) {
@@ -459,7 +441,6 @@ function AppointmentEditableView({ appointment, attributes }) {
                   size="sm"
                   icon={<DragHandleIcon />}
                   onClick={() => {
-                    handleOnModalOpen(appointmentId);
                     onOpen();
                   }}
                   variant="outline"
@@ -622,26 +603,23 @@ function AppointmentEditableView({ appointment, attributes }) {
       <Modal
         isOpen={isOpen}
         onClose={() => {
-          handleOnModalClose();
           onClose();
         }}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Users</ModalHeader>
-          {/* ============================================================================= */}
           <ModalCloseButton />
+          {/* ============================================================================= */}
           <ModalBody>
             <Stack>
               {!isUsersLoading &&
-                !isAssignedUsersLoading &&
                 users.map(({ email, _id }) => (
                   <Checkbox
                     key={_id}
-                    value={
-                      currentAppointmentModal &&
-                      isUserAssigned(_id, currentAppointmentModal)
+                    onChange={(e) =>
+                      handleUserChange(e, { userId: _id, appointmentId })
                     }
-                    onChange={(e) => handleUserChange(e, _id)}>
+                    isChecked={isUserAssigned(_id, appointment)}>
                     {email}
                   </Checkbox>
                 ))}
@@ -654,7 +632,6 @@ function AppointmentEditableView({ appointment, attributes }) {
               colorScheme="blue"
               mr={3}
               onClick={() => {
-                handleOnModalClose();
                 onClose();
               }}>
               Close

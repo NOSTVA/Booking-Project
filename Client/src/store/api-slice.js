@@ -13,12 +13,14 @@ export const apiSlice = createApi({
     }),
     getAppointment: builder.query({
       query: (id) => `/appointments/${id}`,
+      providesTags: ["Appointment"],
     }),
     getAppointments: builder.query({
       query: ({ owner, status, visa }) =>
         `/appointments?owner=${owner}&status=${status}&visa=${visa}`,
       providesTags: ["Appointment"],
     }),
+
     deleteAppointment: builder.mutation({
       query: (id) => ({
         url: `/appointments/${id}`,
@@ -57,6 +59,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Appointment"],
     }),
+
     login: builder.mutation({
       query: (data) => ({
         url: `/login`,
@@ -71,18 +74,31 @@ export const apiSlice = createApi({
         body: data,
       }),
     }),
+
     getMyAppointments: builder.query({
       query: ({ owner, status, visa }) =>
         `/u/appointments?owner=${owner}&status=${status}&visa=${visa}`,
       providesTags: ["Appointment"],
     }),
-    getAssignedUsers: builder.query({
-      query: () => `/u/users/assign`,
-      providesTags: ["Appointment"],
-    }),
     getAllUsers: builder.query({
       query: () => `/u/users`,
       providesTags: ["Appointment"],
+    }),
+
+    deassignUser: builder.mutation({
+      query: ({ userId, appointmentId }) => ({
+        url: `/u/users/assign/${userId}/${appointmentId}`,
+        method: "DELETE",
+        invalidatesTags: ["Appointment"],
+      }),
+    }),
+
+    assignUser: builder.mutation({
+      query: ({ userId, appointmentId }) => ({
+        url: `/u/users/assign/${userId}/${appointmentId}`,
+        method: "POST",
+        invalidatesTags: ["Appointment"],
+      }),
     }),
   }),
 });
@@ -99,6 +115,7 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useGetMyAppointmentsQuery,
-  useGetAssignedUsersQuery,
   useGetAllUsersQuery,
+  useDeassignUserMutation,
+  useAssignUserMutation,
 } = apiSlice;

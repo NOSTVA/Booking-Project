@@ -23,7 +23,7 @@ import UserContext from "../context/userContext";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
-  
+
   return (
     <Box
       position="fixed"
@@ -33,8 +33,7 @@ export default function Navbar() {
       zIndex={99}
       borderBottom={1}
       borderStyle={"solid"}
-      borderColor={useColorModeValue("gray.300", "gray.600")}
-    >
+      borderColor={useColorModeValue("gray.300", "gray.600")}>
       <Flex
         bg={useColorModeValue("white", "gray.800")}
         color={useColorModeValue("gray.600", "white")}
@@ -43,8 +42,7 @@ export default function Navbar() {
         px={{ base: 4 }}
         align={"center"}
         maxWidth={1300}
-        mx="auto"
-      >
+        mx="auto">
         <Flex flex={{ base: 1 }} justify={{ base: "start" }}>
           <Logo />
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -108,8 +106,7 @@ const DesktopNav = () => {
                   _hover={{
                     textDecoration: "none",
                     color: linkHoverColor,
-                  }}
-                >
+                  }}>
                   {navItem.label}
                 </Link>
               </PopoverTrigger>
@@ -131,8 +128,7 @@ const DesktopNav = () => {
                   textDecoration: "none",
                   color: linkHoverColor,
                 }}
-                to="/admin"
-              >
+                to="/admin">
                 Admin Dashboard
               </Link>
             </PopoverTrigger>
@@ -176,12 +172,10 @@ const MobileNavItem = ({ label, children, href }) => {
         align={"center"}
         _hover={{
           textDecoration: "none",
-        }}
-      >
+        }}>
         <Text
           fontWeight={600}
-          color={useColorModeValue("gray.600", "gray.200")}
-        >
+          color={useColorModeValue("gray.600", "gray.200")}>
           {label}
         </Text>
       </Flex>
@@ -193,8 +187,7 @@ const MobileNavItem = ({ label, children, href }) => {
           borderLeft={1}
           borderStyle={"solid"}
           borderColor={useColorModeValue("gray.200", "gray.700")}
-          align={"start"}
-        ></Stack>
+          align={"start"}></Stack>
       </Collapse>
     </Stack>
   );
@@ -206,8 +199,7 @@ const Logo = () => {
       as="b"
       textAlign={useBreakpointValue({ base: "center", md: "left" })}
       fontFamily={"heading"}
-      color={useColorModeValue("gray.800", "white")}
-    >
+      color={useColorModeValue("gray.800", "white")}>
       BOOKING
     </Text>
   );
@@ -220,13 +212,13 @@ const NAV_ITEMS = [
     adminOnly: false,
   },
   {
-    label: "My Dashboard",
-    href: "/myappointments",
+    label: "Create Appointment",
+    href: "/create",
     adminOnly: false,
   },
   {
-    label: "Create Appointment",
-    href: "/create",
+    label: "My Dashboard",
+    href: "/myappointments",
     adminOnly: false,
   },
 ];
