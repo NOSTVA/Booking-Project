@@ -50,8 +50,6 @@ import {
   useAssignUserMutation,
 } from "../../store/api-slice";
 
-import { useNavigate } from "react-router-dom";
-
 function AppointmentEditableView({ appointment, attributes }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -81,9 +79,20 @@ function AppointmentEditableView({ appointment, attributes }) {
   const [deassignUser] = useDeassignUserMutation();
   const [assignUser] = useAssignUserMutation();
 
-  const navigate = useNavigate();
-
   const { data: users, isLoading: isUsersLoading } = useGetAllUsersQuery();
+
+  const [usersState, setUsersState] = useState({});
+
+  useEffect(() => {
+    if (!isUsersLoading) {
+      const states = {};
+      users.map((user) => {
+        states[user._id] = isUserAssigned(user._id, appointment);
+      });
+
+      setUsersState(states);
+    }
+  }, [appointment, isUsersLoading, users]);
 
   // controllers
   function isUserAssigned(id, appointment) {
@@ -97,7 +106,7 @@ function AppointmentEditableView({ appointment, attributes }) {
     } else {
       await deassignUser({ userId, appointmentId });
     }
-    navigate("/admin", { replace: true });
+    setUsersState((prevState) => ({ ...prevState, [userId]: isChecked }));
   }
 
   function onApplicantAvatarOpen(image) {
@@ -619,7 +628,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                     onChange={(e) =>
                       handleUserChange(e, { userId: _id, appointmentId })
                     }
-                    isChecked={isUserAssigned(_id, appointment)}>
+                    isChecked={usersState[_id]}>
                     {email}
                   </Checkbox>
                 ))}

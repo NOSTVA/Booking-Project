@@ -13,9 +13,8 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
-
-import { Link } from "react-router-dom";
 
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
@@ -51,7 +50,7 @@ export default function Navbar() {
         </Flex>
         <Flex ml={{ base: -2 }}>
           <HStack>
-            <Button to="/logout" as={Link} size="sm">
+            <Button href="/logout" as={Link} size="sm">
               Log out
             </Button>
             <Flex display={{ base: "flex", md: "none" }}>
@@ -99,7 +98,7 @@ const DesktopNav = () => {
               <PopoverTrigger>
                 <Link
                   p={2}
-                  to={navItem.href ?? "#"}
+                  href={navItem.href ?? "#"}
                   fontSize={"sm"}
                   fontWeight={500}
                   color={linkColor}
@@ -128,7 +127,7 @@ const DesktopNav = () => {
                   textDecoration: "none",
                   color: linkHoverColor,
                 }}
-                to="/admin">
+                href="/admin">
                 Admin Dashboard
               </Link>
             </PopoverTrigger>
@@ -167,7 +166,7 @@ const MobileNavItem = ({ label, children, href }) => {
       <Flex
         py={2}
         as={Link}
-        to={href ?? "#"}
+        href={href ?? "#"}
         justify={"space-between"}
         align={"center"}
         _hover={{
