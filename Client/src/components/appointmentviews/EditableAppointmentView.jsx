@@ -30,6 +30,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 
 import {
@@ -199,7 +200,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                     size="sm"
                     layout={layout}
                     width="full"
-                    variant="simple">
+                    variant="simple"
+                  >
                     <Tbody>
                       <Tr>
                         <Td>
@@ -223,7 +225,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 appointmentId,
                                 "expectedTravelDate"
                               )
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -253,7 +256,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { status: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {statusEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -276,7 +280,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "email")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -305,7 +310,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { visa: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {visaEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -328,7 +334,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "phone")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -356,7 +363,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { owner: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {ownerEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -381,7 +389,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "note")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview width="full" />
                             </Tooltip>
@@ -497,7 +506,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "firstName")}>
+                            onEdit={() => handleEdit(_id, "firstName")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -516,7 +526,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "lastName")}>
+                            onEdit={() => handleEdit(_id, "lastName")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -538,7 +549,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "passportNumber")}>
+                            onEdit={() => handleEdit(_id, "passportNumber")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -564,7 +576,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "dateOfBirth")}>
+                            onEdit={() => handleEdit(_id, "dateOfBirth")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -581,7 +594,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                           <Stack
                             direction="row"
                             align="center"
-                            justify="center">
+                            justify="center"
+                          >
                             <IconButton
                               aria-label="Delete"
                               size="sm"
@@ -613,7 +627,8 @@ function AppointmentEditableView({ appointment, attributes }) {
         isOpen={isOpen}
         onClose={() => {
           onClose();
-        }}>
+        }}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Users</ModalHeader>
@@ -628,7 +643,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                     onChange={(e) =>
                       handleUserChange(e, { userId: _id, appointmentId })
                     }
-                    isChecked={usersState[_id]}>
+                    isChecked={usersState[_id]}
+                  >
                     {email}
                   </Checkbox>
                 ))}
@@ -642,7 +658,8 @@ function AppointmentEditableView({ appointment, attributes }) {
               mr={3}
               onClick={() => {
                 onClose();
-              }}>
+              }}
+            >
               Close
             </Button>
           </ModalFooter>
@@ -652,11 +669,15 @@ function AppointmentEditableView({ appointment, attributes }) {
       <Modal
         isCentered={true}
         isOpen={isAvatarModalOpen}
-        onClose={() => onApplicantAvatarClose()}>
+        onClose={() => onApplicantAvatarClose()}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
           <Image src={selectedImage} />
+          <Link target="_blank" href={selectedImage}>
+            {selectedImage}
+          </Link>
         </ModalContent>
       </Modal>
     </>

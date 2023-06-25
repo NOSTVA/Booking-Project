@@ -87,28 +87,7 @@ const MainFrom = () => {
       applicants: getApplicantsData(applicants),
     };
 
-    const result = await createAppointment(formData);
-    result?.error.data.errors.map((err) => {
-      if (err.field === "expectedTravelDate") {
-        setExpicDate(err.message);
-      }
-      if (err.field === "email") {
-        setEmailMsg(err.message);
-      }
-      if (err.field === "phone") {
-        setPhoneMsg(err.message);
-      }
-      applicants.map((app, index) => {
-        if (app[err.field].value === err.value || app[err.field].value === "") {
-          setApplicants((prev) => {
-            const newArr = [...prev];
-            newArr[index][err.field].err = err.message;
-            return newArr;
-          });
-        }
-      });
-      console.log(applicants);
-    });
+    await createAppointment(formData);
   };
 
   const handlePhoneKeyDown = (e) => {
@@ -182,7 +161,8 @@ const MainFrom = () => {
                 onClick={() => {
                   handleConfirmDelete(index);
                   toast.closeAll();
-                }}>
+                }}
+              >
                 Yes
               </Button>
               <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
@@ -198,7 +178,6 @@ const MainFrom = () => {
   const handleConfirmDelete = (index) => {
     const newApplicants = [...applicants];
     newApplicants.splice(index, 1);
-    console.log(newApplicants);
     setApplicants(newApplicants);
   };
   return (
@@ -306,7 +285,6 @@ const MainFrom = () => {
                       size="md"
                       type="tel"
                       value={applicant.passportNumber.value}
-                      onKeyDown={handlePhoneKeyDown}
                       onChange={(e) =>
                         handleApplicantChange(
                           index,
@@ -320,7 +298,7 @@ const MainFrom = () => {
                   <Box mb={4}>
                     <FormLabel>Date of birth</FormLabel>
                     <Input
-                      placeholder="Passport number"
+                      placeholder="Date of birth"
                       size="md"
                       type="date"
                       value={applicant.dateOfBirth.value}
