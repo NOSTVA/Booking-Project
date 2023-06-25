@@ -89,7 +89,6 @@ const MainFrom = () => {
       const applicantDate = new Date(applicant.dateOfBirth.value);
       return applicantDate.getTime() < today.getTime();
     });
-    console.log(isDateValid);
     if (!isDateValid) {
       toast({
         title: "Please enter valid date of birth",
@@ -143,14 +142,17 @@ const MainFrom = () => {
   };
 
   const handleAddApplicant = () => {
-    if (applicants.length <= 4) {
-      setApplicants({
-        firstName: { value: "", err: "" },
-        lastName: { value: "", err: "" },
-        passportNumber: { value: "", err: "" },
-        dateOfBirth: { value: "", err: "" },
-        image: { value: "", err: "" },
-      });
+    if (applicants.length < 5) {
+      setApplicants([
+        ...applicants,
+        {
+          firstName: { value: "", err: "" },
+          lastName: { value: "", err: "" },
+          passportNumber: { value: "", err: "" },
+          dateOfBirth: { value: "", err: "" },
+          image: { value: "", err: "" },
+        },
+      ]);
     } else {
       toast({
         title: "maximum number of applicants is 5",
