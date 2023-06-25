@@ -68,6 +68,11 @@ const MainFrom = () => {
         !applicant.image.value
     );
 
+    const isImageValid = applicants.every(
+      (applicant) =>
+        !applicant.image.value || applicant.image.value.startsWith("https://")
+    );
+
     if (input === "" || phoneNumber === "" || isFieldsEmpty) {
       toast({
         title: "Please fill in all required fields",
@@ -79,7 +84,34 @@ const MainFrom = () => {
       });
       return;
     }
-
+    const today = new Date();
+    const isDateValid = applicants.every((applicant) => {
+      const applicantDate = new Date(applicant.dateOfBirth.value);
+      return applicantDate.getTime() < today.getTime();
+    });
+    console.log(isDateValid);
+    if (!isDateValid) {
+      toast({
+        title: "Please enter valid date of birth",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+        duration: 3000,
+      });
+      return;
+    }
+    if (!isImageValid) {
+      toast({
+        title: "The image URL must start with https:// ",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+        duration: 3000,
+      });
+      return;
+    }
     const formData = {
       expectedTravelDate: e.target.elements.date.value,
       email: input,
@@ -88,6 +120,7 @@ const MainFrom = () => {
     };
 
     await createAppointment(formData);
+    window.location.reload();
   };
 
   const handlePhoneKeyDown = (e) => {
@@ -111,16 +144,13 @@ const MainFrom = () => {
 
   const handleAddApplicant = () => {
     if (applicants.length <= 4) {
-      setApplicants([
-        ...applicants,
-        {
-          firstName: { value: "", err: "" },
-          lastName: { value: "", err: "" },
-          passportNumber: { value: "", err: "" },
-          dateOfBirth: { value: "", err: "" },
-          image: { value: "", err: "" },
-        },
-      ]);
+      setApplicants({
+        firstName: { value: "", err: "" },
+        lastName: { value: "", err: "" },
+        passportNumber: { value: "", err: "" },
+        dateOfBirth: { value: "", err: "" },
+        image: { value: "", err: "" },
+      });
     } else {
       toast({
         title: "maximum number of applicants is 5",
@@ -323,7 +353,9 @@ const MainFrom = () => {
                         handleApplicantChange(index, "image", e.target.value)
                       }
                     />
-                    <FormErrorMessage>{errMsg}</FormErrorMessage>
+                    <FormErrorMessage>
+                      The image should be start with "https://"
+                    </FormErrorMessage>
                   </Box>
                 </CardBody>
               </Card>

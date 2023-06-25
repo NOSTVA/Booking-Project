@@ -7,6 +7,8 @@ import MyAppointments from "./pages/MyAppointments";
 
 import UserContext from "./context/userContext";
 import { useGetUserDataQuery } from "./store/api-slice";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   const { data: user, isLoading } = useGetUserDataQuery();
@@ -27,6 +29,14 @@ function App() {
     {
       path: "myappointments",
       element: <MyAppointments />,
+    },
+    {
+      path: "login",
+      element: <Login />,
+    },
+    {
+      path: "signup",
+      element: <Signup />,
     },
   ]);
 

@@ -9,6 +9,9 @@ import {
   Switch,
   useColorMode,
   useColorModeValue,
+  HStack,
+  Text,
+  Link,
 } from "@chakra-ui/react";
 
 const Login = () => {
@@ -41,15 +44,12 @@ const Login = () => {
           Log In
         </Button>
         <FormControl display="flex" alignItems="center">
-          <FormLabel htmlFor="dark_mode" mb="0">
-            Enable Dark Mode?
-          </FormLabel>
-          <Switch
-            id="dark_mode"
-            colorScheme="teal"
-            size="lg"
-            onChange={toggleColorMode}
-          />
+          <HStack>
+            <Text>Dont have an account </Text>
+            <Button href="/signup" as={Link} size="sm">
+              Signup
+            </Button>
+          </HStack>
         </FormControl>
       </Flex>
     </Flex>
