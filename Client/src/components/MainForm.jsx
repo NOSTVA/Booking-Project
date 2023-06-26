@@ -23,7 +23,7 @@ import { useToast } from "@chakra-ui/react";
 
 const MainFrom = () => {
   const [createAppointment, { isLoading }] = useCreateAppointmentMutation();
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg1] = useState("");
   const [fnameErr, setFnameErr] = useState("");
   const [expicDate, setExpicDate] = useState("");
   const [emailMsg, setEmailMsg] = useState("");
@@ -373,14 +373,16 @@ const MainFrom = () => {
           </form>
         </Stack>
       ) : (
-        <Spinner
-          margin={10}
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-        />
+        <Stack alignItems="center">
+          <Spinner
+            margin={10}
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </Stack>
       )}
     </Stack>
   );

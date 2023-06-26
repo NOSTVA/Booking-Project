@@ -39,6 +39,7 @@ import {
   AddIcon,
   CopyIcon,
   DragHandleIcon,
+  ExternalLinkIcon,
 } from "@chakra-ui/icons";
 
 import {
@@ -184,6 +185,26 @@ function AppointmentEditableView({ appointment, attributes }) {
         [property]: appointment[property],
       },
     }));
+  }
+
+  function getApplicantCode({
+    firstName,
+    lastName,
+    passportNumber,
+    dateOfBirth,
+    expectedTravelDate,
+    email,
+    phone,
+  }) {
+    return `
+    const email = "${email}";
+    const expectedDeparture = "${expectedTravelDate.split("T")[0]}";
+    const phone = "${phone}";
+    const firstName = "${firstName}";
+    const lastName = "${lastName}";
+    const passport = "${passportNumber}";
+    const birthLocalDate = "${dateOfBirth.split("T")[0]}";
+    `;
   }
 
   const layout = useBreakpointValue({ base: "default", md: "fixed" });
@@ -419,31 +440,6 @@ function AppointmentEditableView({ appointment, attributes }) {
               </CardBody>
             </Card>
             <Stack>
-              <Tooltip label="Copy Code" placement="right">
-                <IconButton
-                  aria-label="Copy Code"
-                  size="sm"
-                  icon={<CopyIcon />}
-                  variant="outline"
-                />
-              </Tooltip>
-              <Tooltip label="Add applicant" placement="right">
-                <IconButton
-                  aria-label="Add Applicant"
-                  size="sm"
-                  icon={<AddIcon />}
-                  variant="outline"
-                />
-              </Tooltip>
-              <Tooltip label="Copy Link" placement="right">
-                <IconButton
-                  aria-label="Copy Link"
-                  size="sm"
-                  icon={<LinkIcon />}
-                  variant="outline"
-                  onClick={() => navigator.clipboard.writeText(appointmentId)}
-                />
-              </Tooltip>
               <Tooltip label="Delete" placement="right">
                 <IconButton
                   aria-label="Delete"
@@ -602,6 +598,24 @@ function AppointmentEditableView({ appointment, attributes }) {
                               icon={<DeleteIcon />}
                               onClick={() => handleDeleteClick(_id)}
                             />
+                            <IconButton
+                              aria-label="Copy code"
+                              size="sm"
+                              icon={<CopyIcon />}
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  getApplicantCode({
+                                    firstName,
+                                    lastName,
+                                    passportNumber,
+                                    dateOfBirth,
+                                    expectedTravelDate,
+                                    email,
+                                    phone,
+                                  })
+                                )
+                              }
+                            />
                           </Stack>
                         </Td>
                       </Tr>
@@ -674,10 +688,24 @@ function AppointmentEditableView({ appointment, attributes }) {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <Image src={selectedImage} />
-          <Link target="_blank" href={selectedImage}>
-            {selectedImage}
-          </Link>
+          <Image src={selectedImage} alt="Error in the image link" />
+          <Stack spacing={4}>
+            <Text
+              fontSize="sm"
+              fontStyle="italic"
+              color="gray.500"
+              mt="2"
+              mr="10"
+            >
+              {selectedImage.alt}
+            </Text>
+            <IconButton
+              target="_blank"
+              href={selectedImage}
+              icon={<ExternalLinkIcon />}
+              as={Link}
+            ></IconButton>
+          </Stack>
         </ModalContent>
       </Modal>
     </>
