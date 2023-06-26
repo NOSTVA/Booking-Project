@@ -45,8 +45,6 @@ import {
 
 import {
   DeleteIcon,
-  LinkIcon,
-  AddIcon,
   CopyIcon,
   DragHandleIcon,
   ExternalLinkIcon,
@@ -98,9 +96,9 @@ function AppointmentEditableView({ appointment, attributes }) {
   useEffect(() => {
     if (!isUsersLoading) {
       const states = {};
-      users.map((user) => {
-        states[user._id] = isUserAssigned(user._id, appointment);
-      });
+      users.map(
+        (user) => (states[user._id] = isUserAssigned(user._id, appointment))
+      );
 
       setUsersState(states);
     }
