@@ -204,6 +204,30 @@ function AppointmentEditableView({ appointment, attributes }) {
     const lastName = "${lastName}";
     const passport = "${passportNumber}";
     const birthLocalDate = "${dateOfBirth.split("T")[0]}";
+        
+    function fill(element, data) {
+      element.value = data;
+      element.dispatchEvent(new Event("input"));
+      element.dispatchEvent(new Event("change"));
+      element.dispatchEvent(new Event("compositionend"));
+    }
+    let i = 0
+    document
+      .querySelector("app-no-form #phone")
+      .dispatchEvent(new Event("ngModelChange"));
+    fill(document.querySelectorAll("app-no-form #applicantEmail")[i], email);
+    fill(
+      document.querySelectorAll("app-no-form #expectedDepartureLocalDate")[i],
+      expectedDeparture
+    );
+    fill(document.querySelectorAll("app-no-form #phone")[i], phone);
+    fill(document.querySelectorAll("app-no-form #surname")[i], firstName);
+    fill(document.querySelectorAll("app-no-form #name")[i], lastName);
+    fill(document.querySelectorAll("app-no-form #passport")[i], passport);
+    fill(
+      document.querySelectorAll("app-no-form #birthLocalDate")[i],
+      birthLocalDate
+    );
     `;
   }
 
