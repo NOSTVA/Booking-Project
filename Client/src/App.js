@@ -11,37 +11,43 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 function App() {
-  const { data: user, isLoading } = useGetUserDataQuery();
+  const { data: user, isLoading, isSuccess, isError } = useGetUserDataQuery();
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Home />,
+      errorElement: <></>,
     },
     {
       path: "admin",
       element: <Admin />,
+      errorElement: <></>,
     },
     {
       path: "create",
       element: <Create />,
+      errorElement: <></>,
     },
     {
       path: "myappointments",
       element: <MyAppointments />,
+      errorElement: <></>,
     },
     {
       path: "login",
       element: <Login />,
+      errorElement: <></>,
     },
     {
-      path: "register",
+      path: "app/booking/team/signup",
       element: <Signup />,
+      errorElement: <></>,
     },
   ]);
 
   return (
-    <UserContext.Provider value={{ user, isLoading }}>
+    <UserContext.Provider value={{ user, isLoading, isSuccess, isError }}>
       <RouterProvider router={router} />
     </UserContext.Provider>
   );

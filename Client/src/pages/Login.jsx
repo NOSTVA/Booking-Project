@@ -47,7 +47,8 @@ const Login = () => {
         bg={formBackground}
         p={12}
         borderRadius={8}
-        boxShadow="lg">
+        boxShadow="lg"
+      >
         <Heading mb={6}>Log In</Heading>
         <FormControl>
           <Input
@@ -74,17 +75,10 @@ const Login = () => {
         <Button
           colorScheme="teal"
           mb={8}
-          onClick={() => handelFormSubmit(formData)}>
+          onClick={() => handelFormSubmit(formData)}
+        >
           Log In
         </Button>
-        <FormControl display="flex" alignItems="center">
-          <HStack>
-            <Text>Dont have an account </Text>
-            <Button href="/register" as={Link} size="sm">
-              Signup
-            </Button>
-          </HStack>
-        </FormControl>
       </Flex>
     </Flex>
   );

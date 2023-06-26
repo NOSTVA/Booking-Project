@@ -85,8 +85,11 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
 
-  const { user, isLoading } = useContext(UserContext);
+  const { user, isLoading, isError } = useContext(UserContext);
 
+  if (isError) {
+    window.location.href = "/login";
+  }
   return (
     <Stack direction={"row"} spacing={4}>
       {NAV_ITEMS.map((navItem) => {
