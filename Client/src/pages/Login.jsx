@@ -6,9 +6,6 @@ import {
   Button,
   FormControl,
   useColorModeValue,
-  HStack,
-  Text,
-  Link,
   useToast,
 } from "@chakra-ui/react";
 import { useLoginMutation } from "../store/api-slice";

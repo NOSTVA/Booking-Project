@@ -73,6 +73,17 @@ const MainFrom = () => {
         !applicant.image.value || applicant.image.value.startsWith("https://")
     );
 
+    if (phoneNumber.startsWith("0")) {
+      toast({
+        title: "Phone number shouldnt't start with 0",
+        status: "warning",
+        duration: null,
+        isClosable: false,
+        position: "top",
+        duration: 3000,
+      });
+      return;
+    }
     if (input === "" || phoneNumber === "" || isFieldsEmpty) {
       toast({
         title: "Please fill in all required fields",
