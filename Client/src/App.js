@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Create from "./pages/Create";
@@ -35,7 +35,7 @@ function App() {
       element: <Login />,
     },
     {
-      path: "signup",
+      path: "register",
       element: <Signup />,
     },
   ]);

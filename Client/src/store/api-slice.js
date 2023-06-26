@@ -60,6 +60,13 @@ export const apiSlice = createApi({
       invalidatesTags: ["Appointment"],
     }),
 
+    register: builder.mutation({
+      query: (data) => ({
+        url: `/register`,
+        method: "POST",
+        body: data,
+      }),
+    }),
     login: builder.mutation({
       query: (data) => ({
         url: `/login`,
@@ -67,10 +74,10 @@ export const apiSlice = createApi({
         body: data,
       }),
     }),
-    register: builder.mutation({
+    logout: builder.mutation({
       query: (data) => ({
-        url: `/register`,
-        method: "POST",
+        url: `/logout`,
+        method: "GET",
         body: data,
       }),
     }),
@@ -114,6 +121,7 @@ export const {
   useGetUserDataQuery,
   useLoginMutation,
   useRegisterMutation,
+  useLogoutMutation,
   useGetMyAppointmentsQuery,
   useGetAllUsersQuery,
   useDeassignUserMutation,

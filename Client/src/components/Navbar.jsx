@@ -50,7 +50,7 @@ export default function Navbar() {
         </Flex>
         <Flex ml={{ base: -2 }}>
           <HStack>
-            <Button href="/signup" as={Link} size="sm">
+            <Button href="api/v1/logout" as={Link} size="sm">
               Log out
             </Button>
             <Flex display={{ base: "flex", md: "none" }}>
