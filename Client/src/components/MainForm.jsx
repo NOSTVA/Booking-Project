@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Stack,
@@ -63,14 +63,7 @@ const MainFrom = () => {
       (applicant) =>
         !applicant.firstName.value ||
         !applicant.lastName.value ||
-        !applicant.passportNumber.value ||
-        !applicant.dateOfBirth.value ||
-        !applicant.image.value
-    );
-
-    const isImageValid = applicants.every(
-      (applicant) =>
-        !applicant.image.value || applicant.image.value.startsWith("https://")
+        !applicant.passportNumber.value
     );
 
     if (phoneNumber.startsWith("0")) {
@@ -111,17 +104,7 @@ const MainFrom = () => {
       });
       return;
     }
-    if (!isImageValid) {
-      toast({
-        title: "The image URL must start with https:// ",
-        status: "warning",
-        duration: null,
-        isClosable: false,
-        position: "top",
-        duration: 3000,
-      });
-      return;
-    }
+
     const formData = {
       expectedTravelDate: e.target.elements.date.value,
       email: input,
@@ -130,6 +113,8 @@ const MainFrom = () => {
     };
 
     await createAppointment(formData);
+
+    sessionStorage.setItem("formSubmitted", "true");
     window.location.reload();
   };
 
@@ -146,7 +131,25 @@ const MainFrom = () => {
       e.preventDefault();
     }
   };
+  useEffect(() => {
+    // Check if the form has been successfully submitted
+    const formSubmitted = sessionStorage.getItem("formSubmitted");
 
+    if (formSubmitted === "true") {
+      toast({
+        title: "Form submitted successfully!",
+        status: "success",
+        duration: null,
+        isClosable: true,
+        position: "top",
+        duration: 3000,
+      });
+
+      setTimeout(() => {
+        sessionStorage.removeItem("formSubmitted");
+      }, 6000);
+    }
+  }, []);
   const handlePhoneChange = (e) => {
     const newPhoneNumber = e.target.value.replace(/\D/g, "");
     setPhoneNumber(newPhoneNumber);

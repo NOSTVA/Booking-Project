@@ -24,9 +24,20 @@ import {
   ModalContent,
   ModalCloseButton,
   Image,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  Code,
+  PopoverFooter,
+  ButtonGroup,
+  Button,
 } from "@chakra-ui/react";
 
-import { DeleteIcon, LinkIcon, AddIcon } from "@chakra-ui/icons";
+import { DeleteIcon, LinkIcon, AddIcon, CopyIcon } from "@chakra-ui/icons";
 
 import {
   useDeleteApplicantMutation,
@@ -113,6 +124,50 @@ function AppointmentEditableView({ appointment, attributes }) {
         ],
       },
     }));
+  }
+
+  function getApplicantCode({
+    firstName,
+    lastName,
+    passportNumber,
+    dateOfBirth,
+    expectedTravelDate,
+    email,
+    phone,
+  }) {
+    return `
+    const email = "${email}";
+    const expectedDeparture = "${expectedTravelDate.split("T")[0]}";
+    const phone = "${phone}";
+    const firstName = "${firstName}";
+    const lastName = "${lastName}";
+    const passport = "${passportNumber}";
+    const birthLocalDate = "${dateOfBirth.split("T")[0]}";
+        
+    function fill(element, data) {
+      element.value = data;
+      element.dispatchEvent(new Event("input"));
+      element.dispatchEvent(new Event("change"));
+      element.dispatchEvent(new Event("compositionend"));
+    }
+    let i = 0
+    document
+      .querySelector("app-no-form #phone")
+      .dispatchEvent(new Event("ngModelChange"));
+    fill(document.querySelectorAll("app-no-form #applicantEmail")[i], email);
+    fill(
+      document.querySelectorAll("app-no-form #expectedDepartureLocalDate")[i],
+      expectedDeparture
+    );
+    fill(document.querySelectorAll("app-no-form #phone")[i], phone);
+    fill(document.querySelectorAll("app-no-form #surname")[i], firstName);
+    fill(document.querySelectorAll("app-no-form #name")[i], lastName);
+    fill(document.querySelectorAll("app-no-form #passport")[i], passport);
+    fill(
+      document.querySelectorAll("app-no-form #birthLocalDate")[i],
+      birthLocalDate
+    );
+    `;
   }
 
   function handleAppointmentEditClick(_id) {
@@ -519,6 +574,60 @@ function AppointmentEditableView({ appointment, attributes }) {
                               icon={<DeleteIcon />}
                               onClick={() => handleDeleteClick(_id)}
                             />
+                            <Popover placement="left" isLazy>
+                              <PopoverTrigger>
+                                <IconButton
+                                  aria-label="Copy code"
+                                  size="sm"
+                                  icon={<CopyIcon />}
+                                />
+                              </PopoverTrigger>
+                              <PopoverContent width={600} textAlign="left">
+                                <PopoverHeader fontWeight="semibold">
+                                  Code
+                                </PopoverHeader>
+                                <PopoverArrow />
+                                <PopoverCloseButton />
+                                <PopoverBody>
+                                  <Code whiteSpace="pre-wrap">
+                                    {getApplicantCode({
+                                      firstName,
+                                      lastName,
+                                      passportNumber,
+                                      dateOfBirth,
+                                      expectedTravelDate,
+                                      email,
+                                      phone,
+                                    })}
+                                  </Code>
+                                </PopoverBody>
+                                <PopoverFooter
+                                  display="flex"
+                                  justifyContent="flex-end"
+                                >
+                                  <ButtonGroup size="sm">
+                                    <Button
+                                      colorScheme="blue"
+                                      onClick={() =>
+                                        navigator.clipboard.writeText(
+                                          getApplicantCode({
+                                            firstName,
+                                            lastName,
+                                            passportNumber,
+                                            dateOfBirth,
+                                            expectedTravelDate,
+                                            email,
+                                            phone,
+                                          })
+                                        )
+                                      }
+                                    >
+                                      Copy
+                                    </Button>
+                                  </ButtonGroup>
+                                </PopoverFooter>
+                              </PopoverContent>
+                            </Popover>
                           </Stack>
                         </Td>
                       </Tr>
