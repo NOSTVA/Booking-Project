@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   Table,
@@ -48,6 +48,7 @@ import {
   CopyIcon,
   DragHandleIcon,
   ExternalLinkIcon,
+  AtSignIcon,
 } from "@chakra-ui/icons";
 
 import {
@@ -59,7 +60,8 @@ import {
   useDeassignUserMutation,
   useAssignUserMutation,
 } from "../../store/api-slice";
-import { getAppointmentCode } from "../../functions";
+import { getAppointmentCode, getLoginCode } from "../../functions";
+import UserContext from "../../context/userContext";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -91,6 +93,7 @@ function AppointmentEditableView({ appointment, attributes }) {
   const [assignUser] = useAssignUserMutation();
 
   const { data: users, isLoading: isUsersLoading } = useGetAllUsersQuery();
+  const { user, isLoading, isError, isSuccess } = useContext(UserContext);
 
   const [usersState, setUsersState] = useState({});
 
@@ -210,7 +213,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                     size="sm"
                     layout={layout}
                     width="full"
-                    variant="simple">
+                    variant="simple"
+                  >
                     <Tbody>
                       <Tr>
                         <Td>
@@ -234,7 +238,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 appointmentId,
                                 "expectedTravelDate"
                               )
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -264,7 +269,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { status: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {statusEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -287,7 +293,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "email")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -316,7 +323,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { visa: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {visaEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -339,7 +347,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "phone")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -367,7 +376,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { owner: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {ownerEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -392,7 +402,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "note")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview width="full" />
                             </Tooltip>
@@ -467,7 +478,44 @@ function AppointmentEditableView({ appointment, attributes }) {
                           navigator.clipboard.writeText(
                             getAppointmentCode(appointment)
                           )
-                        }>
+                        }
+                      >
+                        Copy
+                      </Button>
+                    </ButtonGroup>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Popover>
+              <Popover placement="left" isLazy>
+                <PopoverTrigger>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Copy code"
+                    size="sm"
+                    icon={<AtSignIcon />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent width={600} textAlign="left">
+                  <PopoverHeader fontWeight="semibold">Code</PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Code
+                      width="full"
+                      whiteSpace="pre-wrap"
+                      sx={{ wordBreak: "break-all" }}
+                    >
+                      {getLoginCode(user)}
+                    </Code>
+                  </PopoverBody>
+                  <PopoverFooter display="flex" justifyContent="flex-end">
+                    <ButtonGroup size="sm">
+                      <Button
+                        colorScheme="blue"
+                        onClick={() =>
+                          navigator.clipboard.writeText(getLoginCode(user))
+                        }
+                      >
                         Copy
                       </Button>
                     </ButtonGroup>
@@ -516,7 +564,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "firstName")}>
+                            onEdit={() => handleEdit(_id, "firstName")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -535,7 +584,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "lastName")}>
+                            onEdit={() => handleEdit(_id, "lastName")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -557,7 +607,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "passportNumber")}>
+                            onEdit={() => handleEdit(_id, "passportNumber")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -583,7 +634,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "dateOfBirth")}>
+                            onEdit={() => handleEdit(_id, "dateOfBirth")}
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -600,7 +652,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                           <Stack
                             direction="row"
                             align="center"
-                            justify="center">
+                            justify="center"
+                          >
                             <IconButton
                               aria-label="Delete"
                               size="sm"
@@ -632,7 +685,8 @@ function AppointmentEditableView({ appointment, attributes }) {
         isOpen={isOpen}
         onClose={() => {
           onClose();
-        }}>
+        }}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Users</ModalHeader>
@@ -647,7 +701,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                     onChange={(e) =>
                       handleUserChange(e, { userId: _id, appointmentId })
                     }
-                    isChecked={usersState[_id]}>
+                    isChecked={usersState[_id]}
+                  >
                     {email}
                   </Checkbox>
                 ))}
@@ -661,7 +716,8 @@ function AppointmentEditableView({ appointment, attributes }) {
               mr={3}
               onClick={() => {
                 onClose();
-              }}>
+              }}
+            >
               Close
             </Button>
           </ModalFooter>
@@ -671,7 +727,8 @@ function AppointmentEditableView({ appointment, attributes }) {
       <Modal
         isCentered={true}
         isOpen={isAvatarModalOpen}
-        onClose={() => onApplicantAvatarClose()}>
+        onClose={() => onApplicantAvatarClose()}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
@@ -682,14 +739,16 @@ function AppointmentEditableView({ appointment, attributes }) {
               fontStyle="italic"
               color="gray.500"
               mt="2"
-              mr="10">
+              mr="10"
+            >
               {selectedImage.alt}
             </Text>
             <IconButton
               target="_blank"
               href={selectedImage}
               icon={<ExternalLinkIcon />}
-              as={Link}></IconButton>
+              as={Link}
+            ></IconButton>
           </Stack>
         </ModalContent>
       </Modal>

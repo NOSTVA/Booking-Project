@@ -77,6 +77,7 @@ const MainFrom = () => {
       });
       return;
     }
+
     if (input === "" || phoneNumber === "" || isFieldsEmpty) {
       toast({
         title: "Please fill in all required fields",
@@ -267,7 +268,7 @@ const MainFrom = () => {
                         type="tel"
                         placeholder="phone number"
                         pattern="[0-9]*"
-                        maxLength="11"
+                        maxLength="10"
                         value={phoneNumber}
                         onKeyDown={handlePhoneKeyDown}
                         onChange={(e) => handlePhoneChange(e)}
@@ -327,6 +328,7 @@ const MainFrom = () => {
                   <Box mb={4}>
                     <FormLabel>Passport number</FormLabel>
                     <Input
+                      maxLength="10"
                       placeholder="Passport number"
                       size="md"
                       type="tel"

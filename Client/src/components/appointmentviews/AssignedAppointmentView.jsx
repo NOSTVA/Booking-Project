@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Text,
   Table,
@@ -23,9 +23,24 @@ import {
   ModalContent,
   ModalCloseButton,
   Image,
+  Popover,
+  PopoverTrigger,
+  IconButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  Code,
+  PopoverFooter,
+  ButtonGroup,
+  Button,
 } from "@chakra-ui/react";
 
 import { useUpdateAppointmentMutation } from "../../store/api-slice";
+import UserContext from "../../context/userContext";
+import { AtSignIcon, CopyIcon } from "@chakra-ui/icons";
+import { getAppointmentCode, getLoginCode } from "../../functions";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const {
@@ -40,6 +55,7 @@ function AppointmentEditableView({ appointment, attributes }) {
     owner,
     visa,
   } = appointment;
+  const { user, isLoading, isError, isSuccess } = useContext(UserContext);
 
   const { statusEmuns } = attributes;
 
@@ -111,7 +127,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                     size="sm"
                     layout={layout}
                     width="full"
-                    variant="simple">
+                    variant="simple"
+                  >
                     <Tbody>
                       <Tr>
                         <Td>
@@ -135,7 +152,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { status: e.target.value },
                               });
-                            }}>
+                            }}
+                          >
                             {statusEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -158,7 +176,8 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "email")
-                            }>
+                            }
+                          >
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -211,6 +230,78 @@ function AppointmentEditableView({ appointment, attributes }) {
                 </TableContainer>
               </CardBody>
             </Card>
+            <Stack>
+              <Popover placement="left" isLazy>
+                <PopoverTrigger>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Copy code"
+                    size="sm"
+                    icon={<CopyIcon />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent height="full" width={600} textAlign="left">
+                  <PopoverHeader fontWeight="semibold">Code</PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Code whiteSpace="pre-wrap" sx={{ wordBreak: "break-all" }}>
+                      {getAppointmentCode(appointment)}
+                    </Code>
+                  </PopoverBody>
+                  <PopoverFooter display="flex" justifyContent="flex-end">
+                    <ButtonGroup size="sm">
+                      <Button
+                        colorScheme="blue"
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            getAppointmentCode(appointment)
+                          )
+                        }
+                      >
+                        Copy
+                      </Button>
+                    </ButtonGroup>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Popover>
+              <Popover placement="left" isLazy>
+                <PopoverTrigger>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Copy code"
+                    size="sm"
+                    icon={<AtSignIcon />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent width={600} textAlign="left">
+                  <PopoverHeader fontWeight="semibold">Code</PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Code
+                      width="full"
+                      whiteSpace="pre-wrap"
+                      sx={{ wordBreak: "break-all" }}
+                    >
+                      {getLoginCode(user)}
+                    </Code>
+                  </PopoverBody>
+                  <PopoverFooter display="flex" justifyContent="flex-end">
+                    <ButtonGroup size="sm">
+                      <Button
+                        colorScheme="blue"
+                        onClick={() =>
+                          navigator.clipboard.writeText(getLoginCode(user))
+                        }
+                      >
+                        Copy
+                      </Button>
+                    </ButtonGroup>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Popover>
+            </Stack>
           </Stack>
           <TableContainer>
             <Table size="sm">
@@ -275,7 +366,8 @@ function AppointmentEditableView({ appointment, attributes }) {
       <Modal
         isCentered={true}
         isOpen={isAvatarModalOpen}
-        onClose={() => onApplicantAvatarClose()}>
+        onClose={() => onApplicantAvatarClose()}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
