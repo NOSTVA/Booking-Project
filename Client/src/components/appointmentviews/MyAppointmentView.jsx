@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Text,
   Table,
@@ -37,7 +37,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-import { DeleteIcon, LinkIcon, AddIcon, CopyIcon } from "@chakra-ui/icons";
+import { DeleteIcon, CopyIcon, AtSignIcon } from "@chakra-ui/icons";
 
 import {
   useDeleteApplicantMutation,
@@ -45,6 +45,8 @@ import {
   useUpdateAppointmentMutation,
   useDeleteAppointmentMutation,
 } from "../../store/api-slice";
+import { getAppointmentCode, getLoginCode } from "../../functions";
+import UserContext from "../../context/userContext";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const {
@@ -125,50 +127,7 @@ function AppointmentEditableView({ appointment, attributes }) {
       },
     }));
   }
-
-  function getApplicantCode({
-    firstName,
-    lastName,
-    passportNumber,
-    dateOfBirth,
-    expectedTravelDate,
-    email,
-    phone,
-  }) {
-    return `
-    const email = "${email}";
-    const expectedDeparture = "${expectedTravelDate.split("T")[0]}";
-    const phone = "${phone}";
-    const firstName = "${firstName}";
-    const lastName = "${lastName}";
-    const passport = "${passportNumber}";
-    const birthLocalDate = "${dateOfBirth.split("T")[0]}";
-        
-    function fill(element, data) {
-      element.value = data;
-      element.dispatchEvent(new Event("input"));
-      element.dispatchEvent(new Event("change"));
-      element.dispatchEvent(new Event("compositionend"));
-    }
-    let i = 0
-    document
-      .querySelector("app-no-form #phone")
-      .dispatchEvent(new Event("ngModelChange"));
-    fill(document.querySelectorAll("app-no-form #applicantEmail")[i], email);
-    fill(
-      document.querySelectorAll("app-no-form #expectedDepartureLocalDate")[i],
-      expectedDeparture
-    );
-    fill(document.querySelectorAll("app-no-form #phone")[i], phone);
-    fill(document.querySelectorAll("app-no-form #surname")[i], firstName);
-    fill(document.querySelectorAll("app-no-form #name")[i], lastName);
-    fill(document.querySelectorAll("app-no-form #passport")[i], passport);
-    fill(
-      document.querySelectorAll("app-no-form #birthLocalDate")[i],
-      birthLocalDate
-    );
-    `;
-  }
+  const { user, isLoading, isError, isSuccess } = useContext(UserContext);
 
   function handleAppointmentEditClick(_id) {
     updateAppointment({
@@ -206,8 +165,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                     size="sm"
                     layout={layout}
                     width="full"
-                    variant="simple"
-                  >
+                    variant="simple">
                     <Tbody>
                       <Tr>
                         <Td>
@@ -231,8 +189,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 appointmentId,
                                 "expectedTravelDate"
                               )
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -262,8 +219,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { status: e.target.value },
                               });
-                            }}
-                          >
+                            }}>
                             {statusEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -286,8 +242,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "email")
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -316,8 +271,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { visa: e.target.value },
                               });
-                            }}
-                          >
+                            }}>
                             {visaEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -340,8 +294,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "phone")
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -369,8 +322,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                                 id: appointmentId,
                                 data: { owner: e.target.value },
                               });
-                            }}
-                          >
+                            }}>
                             {ownerEmuns.map((value, index) => (
                               <option key={index} value={value}>
                                 {value}
@@ -395,8 +347,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             submitOnBlur={false}
                             onEdit={() =>
                               handleAppointmentEdit(appointmentId, "note")
-                            }
-                          >
+                            }>
                             <Tooltip label="Click to edit">
                               <EditablePreview width="full" />
                             </Tooltip>
@@ -436,6 +387,73 @@ function AppointmentEditableView({ appointment, attributes }) {
                   onClick={() => deleteAppointment(appointmentId)}
                 />
               </Tooltip>
+              <Popover placement="left" isLazy>
+                <PopoverTrigger>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Copy code"
+                    size="sm"
+                    icon={<CopyIcon />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent width={600} textAlign="left">
+                  <PopoverHeader fontWeight="semibold">Code</PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Code whiteSpace="pre-wrap" sx={{ wordBreak: "break-all" }}>
+                      {getAppointmentCode(appointment)}
+                    </Code>
+                  </PopoverBody>
+                  <PopoverFooter display="flex" justifyContent="flex-end">
+                    <ButtonGroup size="sm">
+                      <Button
+                        colorScheme="blue"
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            getAppointmentCode(appointment)
+                          )
+                        }>
+                        Copy
+                      </Button>
+                    </ButtonGroup>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Popover>
+              <Popover placement="left" isLazy>
+                <PopoverTrigger>
+                  <IconButton
+                    variant="outline"
+                    aria-label="Copy code"
+                    size="sm"
+                    icon={<AtSignIcon />}
+                  />
+                </PopoverTrigger>
+                <PopoverContent width={600} textAlign="left">
+                  <PopoverHeader fontWeight="semibold">Code</PopoverHeader>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Code
+                      width="full"
+                      whiteSpace="pre-wrap"
+                      sx={{ wordBreak: "break-all" }}>
+                      {getLoginCode(user)}
+                    </Code>
+                  </PopoverBody>
+                  <PopoverFooter display="flex" justifyContent="flex-end">
+                    <ButtonGroup size="sm">
+                      <Button
+                        colorScheme="blue"
+                        onClick={() =>
+                          navigator.clipboard.writeText(getLoginCode(user))
+                        }>
+                        Copy
+                      </Button>
+                    </ButtonGroup>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Popover>
             </Stack>
           </Stack>
           <TableContainer>
@@ -478,8 +496,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "firstName")}
-                          >
+                            onEdit={() => handleEdit(_id, "firstName")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -498,8 +515,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "lastName")}
-                          >
+                            onEdit={() => handleEdit(_id, "lastName")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -521,8 +537,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "passportNumber")}
-                          >
+                            onEdit={() => handleEdit(_id, "passportNumber")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -548,8 +563,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                             onSubmit={() => handleEditClick(_id)}
                             onCancel={() => handleCancelClick(_id)}
                             submitOnBlur={false}
-                            onEdit={() => handleEdit(_id, "dateOfBirth")}
-                          >
+                            onEdit={() => handleEdit(_id, "dateOfBirth")}>
                             <Tooltip label="Click to edit">
                               <EditablePreview />
                             </Tooltip>
@@ -566,68 +580,13 @@ function AppointmentEditableView({ appointment, attributes }) {
                           <Stack
                             direction="row"
                             align="center"
-                            justify="center"
-                          >
+                            justify="center">
                             <IconButton
                               aria-label="Delete"
                               size="sm"
                               icon={<DeleteIcon />}
                               onClick={() => handleDeleteClick(_id)}
                             />
-                            <Popover placement="left" isLazy>
-                              <PopoverTrigger>
-                                <IconButton
-                                  aria-label="Copy code"
-                                  size="sm"
-                                  icon={<CopyIcon />}
-                                />
-                              </PopoverTrigger>
-                              <PopoverContent width={600} textAlign="left">
-                                <PopoverHeader fontWeight="semibold">
-                                  Code
-                                </PopoverHeader>
-                                <PopoverArrow />
-                                <PopoverCloseButton />
-                                <PopoverBody>
-                                  <Code whiteSpace="pre-wrap">
-                                    {getApplicantCode({
-                                      firstName,
-                                      lastName,
-                                      passportNumber,
-                                      dateOfBirth,
-                                      expectedTravelDate,
-                                      email,
-                                      phone,
-                                    })}
-                                  </Code>
-                                </PopoverBody>
-                                <PopoverFooter
-                                  display="flex"
-                                  justifyContent="flex-end"
-                                >
-                                  <ButtonGroup size="sm">
-                                    <Button
-                                      colorScheme="blue"
-                                      onClick={() =>
-                                        navigator.clipboard.writeText(
-                                          getApplicantCode({
-                                            firstName,
-                                            lastName,
-                                            passportNumber,
-                                            dateOfBirth,
-                                            expectedTravelDate,
-                                            email,
-                                            phone,
-                                          })
-                                        )
-                                      }
-                                    >
-                                      Copy
-                                    </Button>
-                                  </ButtonGroup>
-                                </PopoverFooter>
-                              </PopoverContent>
-                            </Popover>
                           </Stack>
                         </Td>
                       </Tr>
@@ -651,8 +610,7 @@ function AppointmentEditableView({ appointment, attributes }) {
       <Modal
         isCentered={true}
         isOpen={isAvatarModalOpen}
-        onClose={() => onApplicantAvatarClose()}
-      >
+        onClose={() => onApplicantAvatarClose()}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />

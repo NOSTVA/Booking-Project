@@ -59,6 +59,7 @@ import {
   useDeassignUserMutation,
   useAssignUserMutation,
 } from "../../store/api-slice";
+import { getAppointmentCode } from "../../functions";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -193,49 +194,6 @@ function AppointmentEditableView({ appointment, attributes }) {
         [property]: appointment[property],
       },
     }));
-  }
-
-  function getAppointmentCode(appointment) {
-    const { applicants, email, phone, expectedTravelDate } = appointment;
-    const newApplicants = applicants.map((applicant) => ({
-      ...applicant,
-      dateOfBirth: applicant.dateOfBirth.split("T")[0],
-      expectedTravelDate: expectedTravelDate.split("T")[0],
-      email,
-      phone,
-    }));
-
-    return `
-    
-    applicants = ${JSON.stringify(newApplicants)}
-    document
-      .querySelector("app-no-form #phone")
-      .dispatchEvent(new Event("ngModelChange"));
-    
-    applicants.map(async (applicant, index) => {
-      await fillInput("surname", applicant.firstName, index);
-      await fillInput("name", applicant.lastName, index);
-      await fillInput("birthLocalDate", applicant.dateOfBirth, index);
-      await fillInput("passport", applicant.passportNumber, index);
-      await fillInput("applicantEmail", applicant.email, index);
-      await fillInput("phone", applicant.phone, index);
-      await fillInput(
-        "expectedDepartureLocalDate",
-        applicant.expectedTravelDate,
-        index
-      );
-    });
-    
-    async function fillInput(field, value, folderIndex) {
-      let ele = document.querySelectorAll(
-        'app-no-form form input[name="' + field +'"]'
-      )[folderIndex];
-      ele.value = value;
-      ele.dispatchEvent(new Event("input"));
-      ele.dispatchEvent(new Event("change"));
-      ele.dispatchEvent(new Event("compositionend"));
-    }
-    `;
   }
 
   const layout = useBreakpointValue({ base: "default", md: "fixed" });
@@ -486,6 +444,7 @@ function AppointmentEditableView({ appointment, attributes }) {
               <Popover placement="left" isLazy>
                 <PopoverTrigger>
                   <IconButton
+                    variant="outline"
                     aria-label="Copy code"
                     size="sm"
                     icon={<CopyIcon />}
