@@ -41,9 +41,9 @@ function getAppointmentCode(appointment) {
     `;
 }
 
-function getLoginCode(user) {
+function getLoginCode(appointment) {
   return `
-    document.getElementsByName("email")[1].value = "${user.email}";
+    document.getElementsByName("email")[1].value = "${appointment}";
     document.getElementsByName("password")[0].value  = "Ahmed@2842663";
     
     `;

@@ -505,7 +505,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                       whiteSpace="pre-wrap"
                       sx={{ wordBreak: "break-all" }}
                     >
-                      {getLoginCode(user)}
+                      {getLoginCode(appointment.email)}
                     </Code>
                   </PopoverBody>
                   <PopoverFooter display="flex" justifyContent="flex-end">
@@ -513,7 +513,9 @@ function AppointmentEditableView({ appointment, attributes }) {
                       <Button
                         colorScheme="blue"
                         onClick={() =>
-                          navigator.clipboard.writeText(getLoginCode(user))
+                          navigator.clipboard.writeText(
+                            getLoginCode(appointment.email)
+                          )
                         }
                       >
                         Copy
