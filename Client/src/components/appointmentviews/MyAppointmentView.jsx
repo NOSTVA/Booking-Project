@@ -98,7 +98,6 @@ function AppointmentEditableView({ appointment, attributes }) {
       delete newState[_id];
       return newState;
     });
-    console.log("result", result);
   }
 
   function handleCancelClick(_id) {

@@ -33,7 +33,6 @@ const Signup = () => {
   const handelFormSubmit = async (formData) => {
     const result = await registerMutation(formData);
     if (result.error) {
-      console.log(result.error);
       return toast({
         position: "top",
         title: "Login failed",

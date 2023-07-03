@@ -16,23 +16,15 @@ import {
   Text,
   HStack,
   Spinner,
-  Link,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverBody,
-  PopoverFooter,
-  Code,
   ButtonGroup,
-  Divider,
+  Select,
 } from "@chakra-ui/react";
-import { useCreateAppointmentMutation } from "../store/api-slice";
+import {
+  useCreateAppointmentMutation,
+  useGetAppointmentsQuery,
+} from "../store/api-slice";
 import { AiOutlineClose } from "react-icons/ai";
 import { useToast } from "@chakra-ui/react";
-import { CopyIcon } from "@chakra-ui/icons";
 import { getAppointmentCode } from "../functions";
 
 const MainFrom = () => {
@@ -47,6 +39,8 @@ const MainFrom = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [expectedDate, setExpectedDate] = useState("");
+  const [owner, setOwner] = useState("none");
+  const [visa, setVisa] = useState("none");
   const [applicants, setApplicants] = useState([
     {
       firstName: { value: "", err: "" },
@@ -56,6 +50,8 @@ const MainFrom = () => {
       image: { value: "", err: "" },
     },
   ]);
+  const { data: optionsData, isSuccess: optionsIsSuccess } =
+    useGetAppointmentsQuery();
 
   const toast = useToast();
   const handleInputChange = (e) => setInput(e.target.value);
@@ -126,6 +122,8 @@ const MainFrom = () => {
       email: input,
       phone: "+20" + phoneNumber,
       applicants: getApplicantsData(applicants),
+      owner: owner,
+      visa: visa,
     };
 
     await createAppointment(formData);
@@ -143,7 +141,12 @@ const MainFrom = () => {
       },
     ]);
   };
-
+  const handleOwnerChange = (e) => {
+    setOwner(e.target.value);
+  };
+  const handleVisaChange = (e) => {
+    setVisa(e.target.value);
+  };
   const handleTravelDateChange = (e) => {
     setExpectedDate(e.target.value);
   };
@@ -164,7 +167,6 @@ const MainFrom = () => {
     // Check if the form has been successfully submitted
 
     if (isSuccess) {
-      console.log(data);
       toast({
         title: "Form submitted successfully!",
         description: (
@@ -181,7 +183,8 @@ const MainFrom = () => {
                       ),
                     })
                   )
-                }>
+                }
+              >
                 Copy
               </Button>
             </ButtonGroup>
@@ -251,7 +254,8 @@ const MainFrom = () => {
                 onClick={() => {
                   handleConfirmDelete(index);
                   toast.closeAll();
-                }}>
+                }}
+              >
                 Yes
               </Button>
               <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
@@ -321,6 +325,44 @@ const MainFrom = () => {
                     <FormErrorMessage>{phoneMsg}</FormErrorMessage>
                   </FormControl>
                 </Box>
+                <HStack mt={5}>
+                  <FormControl>
+                    <FormLabel>Owner</FormLabel>
+
+                    <Select
+                      textAlign="center"
+                      size="sm"
+                      value={owner}
+                      onChange={(e) => handleOwnerChange(e)}
+                    >
+                      {optionsIsSuccess &&
+                        optionsData.attributes.ownerEmuns.map(
+                          (value, index) => (
+                            <option key={index} value={value}>
+                              {value}
+                            </option>
+                          )
+                        )}
+                    </Select>
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Visa</FormLabel>
+
+                    <Select
+                      textAlign="center"
+                      value={visa}
+                      size="sm"
+                      onChange={(e) => handleVisaChange(e)}
+                    >
+                      {optionsIsSuccess &&
+                        optionsData.attributes.visaEmuns.map((value, index) => (
+                          <option key={index} value={value}>
+                            {value}
+                          </option>
+                        ))}
+                    </Select>
+                  </FormControl>
+                </HStack>
               </CardBody>
             </Card>
             <Heading mt={4}>Applicants</Heading>

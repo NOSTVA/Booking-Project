@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api/v1",
+    baseUrl: "/api/v1",
     credentials: "include",
   }),
   tagTypes: ["Appointment"],
@@ -16,7 +16,7 @@ export const apiSlice = createApi({
       providesTags: ["Appointment"],
     }),
     getAppointments: builder.query({
-      query: ({ owner, status, visa }) =>
+      query: ({ owner = "", status = "", visa = "" } = {}) =>
         `/appointments?owner=${owner}&status=${status}&visa=${visa}`,
       providesTags: ["Appointment"],
     }),
