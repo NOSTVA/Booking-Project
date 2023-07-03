@@ -16,13 +16,28 @@ import {
   Text,
   HStack,
   Spinner,
+  Link,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  PopoverFooter,
+  Code,
+  ButtonGroup,
+  Divider,
 } from "@chakra-ui/react";
 import { useCreateAppointmentMutation } from "../store/api-slice";
 import { AiOutlineClose } from "react-icons/ai";
 import { useToast } from "@chakra-ui/react";
+import { CopyIcon } from "@chakra-ui/icons";
+import { getAppointmentCode } from "../functions";
 
 const MainFrom = () => {
-  const [createAppointment, { isLoading }] = useCreateAppointmentMutation();
+  const [createAppointment, { isLoading, data, isSuccess }] =
+    useCreateAppointmentMutation();
   const [errMsg, setErrMsg1] = useState("");
   const [fnameErr, setFnameErr] = useState("");
   const [expicDate, setExpicDate] = useState("");
@@ -31,6 +46,7 @@ const MainFrom = () => {
   const [input, setInput] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [expectedDate, setExpectedDate] = useState("");
   const [applicants, setApplicants] = useState([
     {
       firstName: { value: "", err: "" },
@@ -40,7 +56,9 @@ const MainFrom = () => {
       image: { value: "", err: "" },
     },
   ]);
-
+  if (isSuccess) {
+    console.log(data);
+  }
   const toast = useToast();
 
   const handleInputChange = (e) => setInput(e.target.value);
@@ -56,7 +74,7 @@ const MainFrom = () => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    // setIsSubmitted(true);
 
     // Check if all required fields are filled
     const isFieldsEmpty = applicants.some(
@@ -115,10 +133,23 @@ const MainFrom = () => {
 
     await createAppointment(formData);
 
-    sessionStorage.setItem("formSubmitted", "true");
-    window.location.reload();
+    setExpectedDate("");
+    setInput("");
+    setPhoneNumber("");
+    setApplicants([
+      {
+        firstName: { value: "", err: "" },
+        lastName: { value: "", err: "" },
+        passportNumber: { value: "", err: "" },
+        dateOfBirth: { value: "", err: "" },
+        image: { value: "", err: "" },
+      },
+    ]);
   };
 
+  const handleTravelDateChange = (e) => {
+    setExpectedDate(e.target.value);
+  };
   const handlePhoneKeyDown = (e) => {
     if (
       e.key === "Backspace" ||
@@ -134,23 +165,36 @@ const MainFrom = () => {
   };
   useEffect(() => {
     // Check if the form has been successfully submitted
-    const formSubmitted = sessionStorage.getItem("formSubmitted");
 
-    if (formSubmitted === "true") {
+    if (isSuccess) {
       toast({
         title: "Form submitted successfully!",
+        description: (
+          <Text>
+            Copy code ?
+            <ButtonGroup size="sm">
+              <Button
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    getAppointmentCode({
+                      ...data.appointment[0],
+                      applicants: data.applicants[0],
+                    })
+                  )
+                }
+              >
+                Copy
+              </Button>
+            </ButtonGroup>
+          </Text>
+        ),
         status: "success",
         duration: null,
         isClosable: true,
         position: "top",
-        duration: 3000,
       });
-
-      setTimeout(() => {
-        sessionStorage.removeItem("formSubmitted");
-      }, 6000);
     }
-  }, []);
+  }, [isSuccess, toast]);
   const handlePhoneChange = (e) => {
     const newPhoneNumber = e.target.value.replace(/\D/g, "");
     setPhoneNumber(newPhoneNumber);
@@ -243,6 +287,8 @@ const MainFrom = () => {
                       placeholder="Select Date and Time"
                       size="md"
                       type="date"
+                      value={expectedDate}
+                      onChange={(e) => handleTravelDateChange(e)}
                     />
                     <FormErrorMessage>{expicDate}</FormErrorMessage>
                   </FormControl>

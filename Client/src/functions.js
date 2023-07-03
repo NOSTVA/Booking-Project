@@ -1,4 +1,5 @@
 function getAppointmentCode(appointment) {
+  console.log(appointment);
   const { applicants, email, phone, expectedTravelDate } = appointment;
   const newApplicants = applicants.map((applicant) => ({
     ...applicant,
