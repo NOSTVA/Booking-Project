@@ -16,8 +16,8 @@ function getAppointmentCode(appointment) {
       .dispatchEvent(new Event("ngModelChange"));
     
     applicants.map(async (applicant, index) => {
-      await fillInput("surname", applicant.firstName, index);
-      await fillInput("name", applicant.lastName, index);
+      await fillInput("name", applicant.firstName, index);
+      await fillInput("surname", applicant.lastName, index);
       await fillInput("birthLocalDate", applicant.dateOfBirth, index);
       await fillInput("passport", applicant.passportNumber, index);
       await fillInput("applicantEmail", applicant.email, index);
