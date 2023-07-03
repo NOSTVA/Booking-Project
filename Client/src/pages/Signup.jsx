@@ -10,12 +10,17 @@ import {
   Link,
   HStack,
   useToast,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
 import { useRegisterMutation } from "../store/api-slice";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 const Signup = () => {
   const toast = useToast();
-
+  const [show, setShow] = React.useState(false);
+  const handleClick = () => setShow(!show);
   const formBackground = useColorModeValue("gray.100", "gray.700");
   const [formData, setFormData] = useState({ email: "", password: "" });
 
@@ -48,7 +53,8 @@ const Signup = () => {
         bg={formBackground}
         p={12}
         borderRadius={8}
-        boxShadow="lg">
+        boxShadow="lg"
+      >
         <Heading mb={6}>Signup</Heading>
         <FormControl>
           <Input
@@ -62,20 +68,28 @@ const Signup = () => {
           />
         </FormControl>
         <FormControl>
-          <Input
-            placeholder="**********"
-            type="password"
-            variant="filled"
-            mb={6}
-            required
-            value={formData.password}
-            onChange={(e) => handleInputChange(e, "password")}
-          />
+          <InputGroup size="md">
+            <Input
+              variant="filled"
+              mb={3}
+              pr="4.5rem"
+              type={show ? "text" : "password"}
+              placeholder="************"
+              value={formData.password}
+              onChange={(e) => handleInputChange(e, "password")}
+            />
+            <InputRightElement width="4.5rem">
+              <IconButton h="1.75rem" size="sm" onClick={handleClick}>
+                {show ? <ViewOffIcon /> : <ViewIcon />}
+              </IconButton>
+            </InputRightElement>
+          </InputGroup>
         </FormControl>
         <Button
           colorScheme="teal"
           mb={8}
-          onClick={() => handelFormSubmit(formData)}>
+          onClick={() => handelFormSubmit(formData)}
+        >
           signup
         </Button>
 

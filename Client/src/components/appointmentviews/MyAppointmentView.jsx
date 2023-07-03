@@ -515,6 +515,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                               <EditablePreview />
                             </Tooltip>
                             <EditableInput
+                              maxLength="10"
                               onChange={(e) =>
                                 handleChange(_id, "firstName", e.target.value)
                               }

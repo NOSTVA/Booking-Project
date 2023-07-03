@@ -40,7 +40,7 @@ function AppointmentsGridView({
               (appointment) =>
                 appointment.applicants.length === 0 ||
                 appointment.applicants.some((applicant) =>
-                  applicant.passportNumber.startsWith(term)
+                  applicant.passportNumber.startsWith(term.toUpperCase())
                 )
             )
             .map((appointment) => (
