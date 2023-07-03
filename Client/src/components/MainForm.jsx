@@ -56,11 +56,8 @@ const MainFrom = () => {
       image: { value: "", err: "" },
     },
   ]);
-  if (isSuccess) {
-    console.log(data);
-  }
-  const toast = useToast();
 
+  const toast = useToast();
   const handleInputChange = (e) => setInput(e.target.value);
 
   const isError = isSubmitted && (input === "" || phoneNumber === "");
@@ -167,6 +164,7 @@ const MainFrom = () => {
     // Check if the form has been successfully submitted
 
     if (isSuccess) {
+      console.log(data);
       toast({
         title: "Form submitted successfully!",
         description: (
@@ -178,11 +176,12 @@ const MainFrom = () => {
                   navigator.clipboard.writeText(
                     getAppointmentCode({
                       ...data.appointment[0],
-                      applicants: data.applicants[0],
+                      applicants: data.applicants.map(
+                        ([applicant]) => applicant
+                      ),
                     })
                   )
-                }
-              >
+                }>
                 Copy
               </Button>
             </ButtonGroup>
@@ -252,8 +251,7 @@ const MainFrom = () => {
                 onClick={() => {
                   handleConfirmDelete(index);
                   toast.closeAll();
-                }}
-              >
+                }}>
                 Yes
               </Button>
               <Button size="sm" bg="black" onClick={() => toast.closeAll()}>
