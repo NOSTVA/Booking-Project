@@ -221,7 +221,7 @@ const Logo = () => {
 
 const NAV_ITEMS = [
   {
-    label: "Home",
+    label: "My Dashboard",
     href: "/",
     adminOnly: false,
   },
@@ -231,7 +231,7 @@ const NAV_ITEMS = [
     adminOnly: false,
   },
   {
-    label: "My Dashboard",
+    label: "Home",
     href: "/myappointments",
     adminOnly: false,
   },

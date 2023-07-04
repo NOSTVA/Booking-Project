@@ -304,6 +304,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                               <EditablePreview />
                             </Tooltip>
                             <EditableInput
+                              maxLength={13}
                               onChange={(e) =>
                                 handleChange(
                                   appointmentId,
@@ -558,6 +559,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                               <EditablePreview />
                             </Tooltip>
                             <EditableInput
+                              maxLength={10}
                               onChange={(e) =>
                                 handleChange(
                                   _id,

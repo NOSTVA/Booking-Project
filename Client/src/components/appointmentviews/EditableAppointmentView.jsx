@@ -147,7 +147,6 @@ function AppointmentEditableView({ appointment, attributes }) {
       delete newState[_id];
       return newState;
     });
-    
   }
 
   function handleCancelClick(_id) {
@@ -353,6 +352,7 @@ function AppointmentEditableView({ appointment, attributes }) {
                               <EditablePreview />
                             </Tooltip>
                             <EditableInput
+                              maxLength={13}
                               onChange={(e) =>
                                 handleChange(
                                   appointmentId,

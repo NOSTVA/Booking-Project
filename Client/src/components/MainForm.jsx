@@ -28,8 +28,10 @@ import { useToast } from "@chakra-ui/react";
 import { getAppointmentCode } from "../functions";
 
 const MainFrom = () => {
-  const [createAppointment, { isLoading, data, isSuccess }] =
-    useCreateAppointmentMutation();
+  const [
+    createAppointment,
+    { isLoading, data, isSuccess, error, isError: isCreateError },
+  ] = useCreateAppointmentMutation();
   const [errMsg, setErrMsg1] = useState("");
   const [fnameErr, setFnameErr] = useState("");
   const [expicDate, setExpicDate] = useState("");
@@ -41,6 +43,8 @@ const MainFrom = () => {
   const [expectedDate, setExpectedDate] = useState("");
   const [owner, setOwner] = useState("none");
   const [visa, setVisa] = useState("none");
+  const [status, setStatus] = useState("pending");
+  const [note, setNote] = useState("");
   const [applicants, setApplicants] = useState([
     {
       firstName: { value: "", err: "" },
@@ -50,6 +54,7 @@ const MainFrom = () => {
       image: { value: "", err: "" },
     },
   ]);
+
   const { data: optionsData, isSuccess: optionsIsSuccess } =
     useGetAppointmentsQuery();
 
@@ -81,7 +86,16 @@ const MainFrom = () => {
       toast({
         title: "Phone number shouldnt't start with 0",
         status: "warning",
-        duration: null,
+        isClosable: false,
+        position: "top",
+        duration: 3000,
+      });
+      return;
+    }
+    if (phoneNumber.length < 10) {
+      toast({
+        title: "Phone number should be 10 numbers",
+        status: "warning",
         isClosable: false,
         position: "top",
         duration: 3000,
@@ -93,7 +107,6 @@ const MainFrom = () => {
       toast({
         title: "Please fill in all required fields",
         status: "warning",
-        duration: null,
         isClosable: false,
         position: "top",
         duration: 3000,
@@ -109,7 +122,6 @@ const MainFrom = () => {
       toast({
         title: "Please enter valid date of birth",
         status: "warning",
-        duration: null,
         isClosable: false,
         position: "top",
         duration: 3000,
@@ -124,6 +136,8 @@ const MainFrom = () => {
       applicants: getApplicantsData(applicants),
       owner: owner,
       visa: visa,
+      status: status,
+      note: note,
     };
 
     await createAppointment(formData);
@@ -147,6 +161,12 @@ const MainFrom = () => {
   const handleVisaChange = (e) => {
     setVisa(e.target.value);
   };
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+  };
+  const handleNoteChange = (e) => {
+    setNote(e.target.value);
+  };
   const handleTravelDateChange = (e) => {
     setExpectedDate(e.target.value);
   };
@@ -164,8 +184,6 @@ const MainFrom = () => {
     }
   };
   useEffect(() => {
-    // Check if the form has been successfully submitted
-
     if (isSuccess) {
       toast({
         title: "Form submitted successfully!",
@@ -361,6 +379,36 @@ const MainFrom = () => {
                           </option>
                         ))}
                     </Select>
+                  </FormControl>
+                </HStack>
+                <HStack mt={5}>
+                  <FormControl>
+                    <FormLabel>status</FormLabel>
+                    <Select
+                      textAlign="center"
+                      value={status}
+                      size="sm"
+                      onChange={(e) => handleStatusChange(e)}
+                    >
+                      {optionsIsSuccess &&
+                        optionsData.attributes.statusEmuns.map(
+                          (value, index) => (
+                            <option key={index} value={value}>
+                              {value}
+                            </option>
+                          )
+                        )}
+                    </Select>
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Note</FormLabel>
+                    <Input
+                      placeholder="-"
+                      textAlign="center"
+                      value={note}
+                      size="sm"
+                      onChange={handleNoteChange}
+                    />
                   </FormControl>
                 </HStack>
               </CardBody>

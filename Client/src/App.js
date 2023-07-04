@@ -16,7 +16,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home />,
+      element: <MyAppointments />,
       errorElement: <></>,
     },
     {
@@ -31,7 +31,7 @@ function App() {
     },
     {
       path: "myappointments",
-      element: <MyAppointments />,
+      element: <Home />,
       errorElement: <></>,
     },
     {
