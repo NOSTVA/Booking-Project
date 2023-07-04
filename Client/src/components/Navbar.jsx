@@ -8,8 +8,6 @@ import {
   Stack,
   HStack,
   Collapse,
-  Popover,
-  PopoverTrigger,
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
@@ -32,8 +30,7 @@ export default function Navbar() {
       zIndex={99}
       borderBottom={1}
       borderStyle={"solid"}
-      borderColor={useColorModeValue("gray.300", "gray.600")}
-    >
+      borderColor={useColorModeValue("gray.300", "gray.600")}>
       <Flex
         bg={useColorModeValue("white", "gray.800")}
         color={useColorModeValue("gray.600", "white")}
@@ -42,8 +39,7 @@ export default function Navbar() {
         px={{ base: 4 }}
         align={"center"}
         maxWidth={1300}
-        mx="auto"
-      >
+        mx="auto">
         <Flex flex={{ base: 1 }} justify={{ base: "start" }}>
           <Logo />
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -85,7 +81,7 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue("gray.600", "gray.200");
   const linkHoverColor = useColorModeValue("gray.800", "white");
 
-  const { user, isLoading, isError, isSuccess } = useContext(UserContext);
+  const { user, isLoading, isError } = useContext(UserContext);
 
   if (isError) {
     window.location.href = "/login";
@@ -93,54 +89,56 @@ const DesktopNav = () => {
 
   return (
     <Stack direction={"row"} spacing={4}>
-      {NAV_ITEMS.map((navItem) => {
-        if (navItem.adminOnly && user.role !== "admin") {
-          return null;
-        }
-
+      {NAV_ITEMS.map((navItem, index) => {
         return (
-          <Box key={navItem.label}>
-            <Popover trigger={"hover"} placement={"bottom-start"}>
-              <PopoverTrigger>
-                <Link
-                  p={2}
-                  href={navItem.href ?? "#"}
-                  fontSize={"sm"}
-                  fontWeight={500}
-                  color={linkColor}
-                  _hover={{
-                    textDecoration: "none",
-                    color: linkHoverColor,
-                  }}
-                >
-                  {navItem.label}
-                </Link>
-              </PopoverTrigger>
-            </Popover>
+          <Box key={index}>
+            <Link
+              p={2}
+              href={navItem.href ?? "#"}
+              fontSize={"sm"}
+              fontWeight={500}
+              color={linkColor}
+              _hover={{
+                textDecoration: "none",
+                color: linkHoverColor,
+              }}>
+              {navItem.label}
+            </Link>
           </Box>
         );
       })}
 
       {!isLoading && user.role === "admin" && (
-        <Box>
-          <Popover trigger={"hover"} placement={"bottom-start"}>
-            <PopoverTrigger>
-              <Link
-                p={2}
-                fontSize={"sm"}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: "none",
-                  color: linkHoverColor,
-                }}
-                href="/admin"
-              >
-                Admin Dashboard
-              </Link>
-            </PopoverTrigger>
-          </Popover>
-        </Box>
+        <>
+          <Box>
+            <Link
+              p={2}
+              fontSize={"sm"}
+              fontWeight={500}
+              color={linkColor}
+              _hover={{
+                textDecoration: "none",
+                color: linkHoverColor,
+              }}
+              href="/home">
+              Home
+            </Link>
+          </Box>
+          <Box>
+            <Link
+              p={2}
+              fontSize={"sm"}
+              fontWeight={500}
+              color={linkColor}
+              _hover={{
+                textDecoration: "none",
+                color: linkHoverColor,
+              }}
+              href="/admin">
+              Admin Dashboard
+            </Link>
+          </Box>
+        </>
       )}
     </Stack>
   );
@@ -163,7 +161,10 @@ const MobileNav = () => {
         return <MobileNavItem key={navItem.label} {...navItem} />;
       })}
       {!isLoading && user.role === "admin" && (
-        <MobileNavItem label="Admin Dashboard" href="/admin" />
+        <>
+          <MobileNavItem label="Home" href="/home" />
+          <MobileNavItem label="Admin Dashboard" href="/admin" />
+        </>
       )}
     </Stack>
   );
@@ -182,12 +183,10 @@ const MobileNavItem = ({ label, children, href }) => {
         align={"center"}
         _hover={{
           textDecoration: "none",
-        }}
-      >
+        }}>
         <Text
           fontWeight={600}
-          color={useColorModeValue("gray.600", "gray.200")}
-        >
+          color={useColorModeValue("gray.600", "gray.200")}>
           {label}
         </Text>
       </Flex>
@@ -199,8 +198,7 @@ const MobileNavItem = ({ label, children, href }) => {
           borderLeft={1}
           borderStyle={"solid"}
           borderColor={useColorModeValue("gray.200", "gray.700")}
-          align={"start"}
-        ></Stack>
+          align={"start"}></Stack>
       </Collapse>
     </Stack>
   );
@@ -212,8 +210,7 @@ const Logo = () => {
       as="b"
       textAlign={useBreakpointValue({ base: "center", md: "left" })}
       fontFamily={"heading"}
-      color={useColorModeValue("gray.800", "white")}
-    >
+      color={useColorModeValue("gray.800", "white")}>
       BOOKING
     </Text>
   );
@@ -223,16 +220,9 @@ const NAV_ITEMS = [
   {
     label: "My Dashboard",
     href: "/",
-    adminOnly: false,
   },
   {
     label: "Create Appointment",
     href: "/create",
-    adminOnly: false,
-  },
-  {
-    label: "Home",
-    href: "/myappointments",
-    adminOnly: false,
   },
 ];

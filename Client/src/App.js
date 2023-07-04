@@ -30,7 +30,7 @@ function App() {
       errorElement: <></>,
     },
     {
-      path: "myappointments",
+      path: "home",
       element: <Home />,
       errorElement: <></>,
     },
