@@ -46,7 +46,6 @@ import {
   useDeleteAppointmentMutation,
 } from "../../store/api-slice";
 import { getAppointmentCode, getLoginCode } from "../../functions";
-import UserContext from "../../context/userContext";
 
 function AppointmentEditableView({ appointment, attributes }) {
   const {
@@ -126,7 +125,6 @@ function AppointmentEditableView({ appointment, attributes }) {
       },
     }));
   }
-  const { user, isLoading, isError, isSuccess } = useContext(UserContext);
 
   function handleAppointmentEditClick(_id) {
     updateAppointment({

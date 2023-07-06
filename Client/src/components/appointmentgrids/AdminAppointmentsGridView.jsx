@@ -14,7 +14,7 @@ function AppointmentsGridView({
   isLoading,
 }) {
   const [term, setTerm] = useState("");
-
+ 
   return (
     <Stack spacing={5}>
       {/* Search & Filters */}

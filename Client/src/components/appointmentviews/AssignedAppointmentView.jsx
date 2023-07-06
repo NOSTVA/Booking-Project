@@ -38,7 +38,6 @@ import {
 } from "@chakra-ui/react";
 
 import { useUpdateAppointmentMutation } from "../../store/api-slice";
-import UserContext from "../../context/userContext";
 import { AtSignIcon, CopyIcon } from "@chakra-ui/icons";
 import { getAppointmentCode, getLoginCode } from "../../functions";
 
@@ -55,7 +54,6 @@ function AppointmentEditableView({ appointment, attributes }) {
     owner,
     visa,
   } = appointment;
-  const { user, isLoading, isError, isSuccess } = useContext(UserContext);
 
   const { statusEmuns } = attributes;
 
@@ -65,7 +63,6 @@ function AppointmentEditableView({ appointment, attributes }) {
 
   const [updateAppointment] = useUpdateAppointmentMutation();
 
-  // controllers
   function onApplicantAvatarOpen(image) {
     setSelectedImage(image);
     SetIsAvatarModalOpen(true);

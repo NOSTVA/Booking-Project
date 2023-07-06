@@ -15,6 +15,7 @@ import {
 import MyAppointmentView from "../appointmentviews/MyAppointmentView";
 import AssignedAppointmentView from "../appointmentviews/AssignedAppointmentView";
 import Filter from "../Filter";
+import Search from "../Search";
 
 export default function MyAppointmentsGridView({
   filterField,
@@ -23,7 +24,7 @@ export default function MyAppointmentsGridView({
   isSuccess,
   isLoading,
 }) {
-  const [term] = useState("");
+  const [term, setTerm] = useState("");
 
   return (
     <Stack spacing={5}>
@@ -31,6 +32,7 @@ export default function MyAppointmentsGridView({
       <Card variant="outline" size="sm">
         <CardBody>
           <Stack>
+            <Search term={term} setTerm={setTerm} />
             <Filter
               filterField={filterField}
               setFilterFields={setFilterFields}
